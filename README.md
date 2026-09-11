@@ -69,14 +69,13 @@ Considerando o escopo definido, os processos centrais identificados são:
 | RF06 | O sistema deve permitir registrar a venda de máquinas usadas. |
 | RF07 | O sistema deve permitir registrar locações de máquinas. |
 | RF08 | O sistema deve permitir registrar a devolução de máquinas alugadas, com verificação de estado do equipamento. |
-| RF09 | O sistema deve permitir cadastrar peças de reposição, vinculadas aos modelos de máquina compatíveis. |
-| RF10 | O sistema deve controlar a entrada e a saída de peças do estoque. |
-| RF11 | O sistema deve impedir ou alertar a locação de uma máquina fora de linha ou sem peças de reposição compatíveis disponíveis. |
-| RF12 | O sistema deve permitir abrir ordens de serviço na oficina/assistência técnica. |
-| RF13 | O sistema deve permitir registrar o diagnóstico e o orçamento de uma ordem de serviço. |
-| RF14 | O sistema deve permitir registrar as peças utilizadas em uma ordem de serviço, dando baixa automática no estoque. |
-| RF15 | O sistema deve permitir consultar o histórico de manutenção de uma máquina. |
-| RF16 | O sistema deve permitir registrar pagamentos referentes a vendas, locações e ordens de serviço. |
+| RF09 | O sistema deve controlar a entrada e a saída de peças do estoque. |
+| RF10 | O sistema deve impedir ou alertar a locação de uma máquina fora de linha ou sem peças de reposição compatíveis disponíveis. |
+| RF11 | O sistema deve permitir abrir ordens de serviço na oficina/assistência técnica. |
+| RF12 | O sistema deve permitir registrar o diagnóstico e o orçamento de uma ordem de serviço. |
+| RF13 | O sistema deve permitir registrar as peças utilizadas em uma ordem de serviço, dando baixa automática no estoque. |
+| RF14 | O sistema deve permitir consultar o histórico de manutenção de uma máquina. |
+| RF15 | O sistema deve permitir registrar pagamentos referentes a vendas, locações e ordens de serviço. |
 
 ### 3.2 Requisitos Não Funcionais
 
