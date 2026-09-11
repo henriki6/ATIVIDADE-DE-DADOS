@@ -289,7 +289,7 @@ Considerando o escopo definido, os processos centrais identificados são:
 
 ## 7. Diagrama Entidade-Relacionamento (DER)
 
-![Diagrama Entidade-Relacionamento (DER)](imagens/der-conceitual-felap.png)
+!![Diagrama Entidade-Relacionamento](DER/DER.png)
 
 O diagrama representa as 14 entidades identificadas na modelagem conceitual, com seus principais atributos e as cardinalidades entre os relacionamentos (1:1 e 1:N). A entidade **Máquina** ocupa posição central, conectando-se aos processos de Locação, Venda e Ordem de Serviço, o que reflete a realidade observada na FELAP: uma mesma máquina passa por diferentes ciclos (disponível → alugada/vendida → em manutenção) ao longo do tempo.
 
