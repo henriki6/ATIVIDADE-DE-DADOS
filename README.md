@@ -1,7 +1,5 @@
 ## 1. Caracterização da Organização
 
-
-**Nome e natureza da organização**
 A organização escolhida é a **FELAP Máquinas e Equipamentos LTDA**, empresa privada com fins lucrativos localizada na cidade de São Paulo/SP, atuante no ramo de máquinas e equipamentos de trabalho.
 
 **Contexto e porte**
