@@ -571,3 +571,282 @@ INNER JOIN marca ma
     ON m.id_marca = ma.id_marca
 INNER JOIN categoria c
     ON m.id_categoria = c.id_categoria;
+16. Consultas de Gestão
+
+As consultas de gestão têm como objetivo transformar os dados operacionais em informações úteis para tomada de decisão.
+
+Exemplos de análises:
+
+máquinas disponíveis;
+máquinas alugadas;
+máquinas em manutenção;
+máquinas vendidas;
+quantidade de peças em estoque;
+peças mais utilizadas;
+ordens de serviço abertas;
+vendas realizadas;
+locações realizadas;
+pagamentos registrados.
+
+Essas consultas podem auxiliar os gestores da FELAP no acompanhamento das operações.
+
+17. Consultas de Auditoria
+
+As consultas de auditoria têm como objetivo identificar situações que possam representar inconsistências ou necessidade de verificação.
+
+Exemplos:
+
+máquinas com status de manutenção;
+peças com estoque reduzido;
+máquinas vendidas;
+movimentações de entrada e saída;
+ordens de serviço abertas;
+pagamentos associados aos processos;
+registros que possam exigir conferência administrativa.
+
+A auditoria contribui para melhorar o controle operacional e a confiabilidade das informações.
+
+
+18. Operações UPDATE e DELETE
+
+O script também contempla comandos de alteração e exclusão de registros.
+
+O comando UPDATE demonstra a atualização controlada de informações.
+
+Exemplo: UPDATE peca
+SET quantidade_estoque = quantidade_estoque + 10
+WHERE id_peca = 1;
+
+O comando DELETE deve ser utilizado com cuidado, principalmente em tabelas relacionadas por chaves estrangeiras.
+
+Por isso, no script acadêmico, os exemplos de exclusão são apresentados de forma controlada e devem ser executados somente quando não houver dependências que impeçam a operação.
+
+19. Potencial de BI
+
+Os dados estruturados pelo banco podem futuramente ser utilizados em uma solução de Business Intelligence (BI).
+
+A integração com uma ferramenta de BI permitiria transformar os dados operacionais em indicadores e painéis gerenciais.
+
+19.1 Informações estratégicas
+
+Entre as informações que poderiam ser acompanhadas estão:
+
+faturamento de vendas;
+faturamento de locações;
+quantidade de máquinas disponíveis;
+quantidade de máquinas alugadas;
+quantidade de máquinas em manutenção;
+quantidade de máquinas vendidas;
+quantidade de ordens de serviço;
+consumo de peças;
+situação do estoque.
+20. Indicadores de Desempenho — KPIs
+
+Alguns KPIs que podem ser utilizados são:
+
+KPI 1 — Faturamento de vendas
+
+Representa o valor total das vendas realizadas.
+
+KPI 2 — Receita de locações
+
+Permite acompanhar os valores relacionados às locações.
+
+KPI 3 — Máquinas em manutenção
+
+Indica quantas máquinas estão atualmente em manutenção.
+
+KPI 4 — Peças mais utilizadas
+
+Permite identificar quais peças possuem maior consumo nas ordens de serviço.
+
+KPI 5 — Estoque
+
+Permite acompanhar a quantidade disponível de cada peça.
+
+KPI 6 — Ordens de serviço
+
+Permite acompanhar a quantidade e situação das ordens de serviço.
+
+21. Possibilidades de Inteligência Artificial
+
+A estrutura do banco também pode futuramente servir como fonte de dados para aplicações de Inteligência Artificial.
+
+A IA não substitui o banco de dados. Ela pode utilizar os dados armazenados para realizar análises e gerar recomendações.
+
+21.1 Manutenção Preditiva
+
+Com histórico suficiente de manutenção, seria possível utilizar modelos de IA para identificar padrões relacionados às falhas das máquinas.
+
+Uma aplicação futura poderia estimar quais máquinas possuem maior probabilidade de necessitar de manutenção.
+
+21.2 Previsão de Estoque
+
+A IA poderia analisar:
+
+histórico de consumo;
+quantidade de peças utilizadas;
+frequência das ordens de serviço;
+movimentações de estoque.
+
+Com isso, poderia auxiliar na previsão de necessidade de reposição.
+
+21.3 Recomendação de Estoque
+
+Uma aplicação de IA poderia recomendar quais peças deveriam receber maior prioridade de reposição.
+
+Por exemplo:
+
+Uma peça apresenta consumo elevado e estoque reduzido. O sistema pode recomendar a reposição antes que o estoque se esgote.
+
+21.4 Análise de Locação
+
+A análise dos históricos de locação poderia identificar:
+
+máquinas mais procuradas;
+períodos de maior demanda;
+modelos com maior utilização;
+máquinas com baixa utilização.
+Essas informações poderiam auxiliar decisões relacionadas à aquisição e disponibilidade de equipamentos.
+
+22. Arquitetura Proposta de BI e IA
+
+A arquitetura futura pode ser representada da seguinte forma:
+
+BANCO DE DADOS FELAP
+        |
+        v
+     ETL / ELT
+        |
+        v
+   DATA WAREHOUSE
+        |
+        +--------------------+
+        |                    |
+        v                    v
+       BI                    IA
+        |                    |
+        v                    v
+ DASHBOARDS             MODELOS ANALÍTICOS
+        |                    |
+        v                    v
+ INDICADORES             PREVISÕES
+ E KPIs                  E RECOMENDAÇÕES
+
+O banco operacional seria a fonte dos dados.
+
+Os dados poderiam passar por um processo de ETL/ELT e posteriormente alimentar uma estrutura analítica.
+
+A ferramenta de BI poderia apresentar dashboards para os gestores, enquanto modelos de IA poderiam realizar previsões e recomendações.
+
+23. Benefícios Esperados para a FELAP
+
+A implantação do banco de dados pode proporcionar:
+
+maior organização das informações;
+redução de duplicidade de dados;
+maior controle das máquinas;
+melhor acompanhamento das locações;
+melhor controle das vendas;
+acompanhamento das ordens de serviço;
+maior controle do estoque;
+histórico das movimentações;
+facilidade para geração de relatórios;
+suporte à tomada de decisões.
+
+Em uma etapa futura, a integração com BI e IA poderá ampliar ainda mais o valor dos dados.
+
+24. Regras de Negócio Consideradas
+
+O modelo lógico considera as principais regras identificadas na Entrega 1.
+
+Entre elas:
+
+O número de série da máquina deve ser único.
+Uma máquina não deve ser cadastrada duas vezes.
+Máquinas alugadas devem possuir controle de disponibilidade.
+Máquinas em manutenção devem ser identificadas pelo status.
+Máquinas vendidas não devem continuar disponíveis para locação.
+Ordens de serviço devem estar relacionadas a um cliente e a uma máquina.
+Uma ordem de serviço pode utilizar várias peças.
+A utilização de peças deve ser relacionada ao controle de estoque.
+O estoque não deve possuir quantidade negativa.
+As movimentações de estoque devem ser registradas.
+Os processos devem possuir funcionários responsáveis.
+Os pagamentos devem estar relacionados a um processo de origem.
+Os dados dos clientes devem ser tratados com segurança.
+O acesso às informações deve respeitar as permissões definidas pelo sistema.
+25. Pontos de Validação e Evolução
+
+Como o projeto está relacionado a uma empresa real, algumas regras ainda dependem da validação da pesquisa de campo.
+
+Entre os pontos que devem ser confirmados estão:
+
+funcionamento real do sistema GESCOM;
+regras internas de locação;
+critérios utilizados para definir uma máquina como fora de linha;
+processo real de aprovação de orçamento;
+processo de movimentação de estoque;
+regras para compatibilidade entre máquinas e peças;
+responsáveis por cada etapa dos processos;
+regras de pagamento utilizadas pela empresa.
+
+Essas informações poderão gerar ajustes no modelo lógico e na implementação final.
+
+26. Uso de Inteligência Artificial no Desenvolvimento
+
+A Inteligência Artificial foi utilizada como ferramenta de apoio durante o desenvolvimento do projeto.
+
+As ferramentas utilizadas foram:
+
+Claude;
+ChatGPT.
+
+A utilização ocorreu principalmente para:
+
+levantamento inicial de ideias;
+organização dos requisitos;
+revisão da estrutura do banco;
+apoio na definição das tabelas;
+análise de relacionamentos;
+elaboração do modelo lógico;
+apoio na criação do script SQL;
+revisão da normalização;
+identificação de possíveis inconsistências;
+elaboração das possibilidades de BI e IA.
+
+As respostas geradas pelas ferramentas não foram consideradas automaticamente corretas.
+
+As sugestões foram analisadas pelos integrantes do projeto e comparadas com:
+
+requisitos da atividade;
+modelo conceitual;
+regras de negócio;
+informações levantadas sobre a organização;
+coerência técnica do banco.
+
+Quando uma sugestão não estava de acordo com o projeto, ela foi modificada ou descartada.
+
+27. Reflexão Crítica sobre o Uso de IA
+
+A utilização de IA contribuiu para acelerar a elaboração e revisão do projeto, principalmente em tarefas de organização, documentação e desenvolvimento do SQL.
+
+Entretanto, a IA não substituiu a análise dos integrantes do grupo.
+
+Foi necessário revisar as respostas, pois algumas sugestões poderiam não representar exatamente a realidade da FELAP ou poderiam gerar inconsistências entre o modelo conceitual, o modelo lógico e as regras de negócio.
+
+Dessa forma, a IA foi utilizada como ferramenta de apoio e não como fonte única de decisão.
+
+A validação humana permaneceu necessária durante todo o desenvolvimento.
+
+28. Conclusão
+
+A Entrega 2 permitiu transformar o modelo conceitual desenvolvido anteriormente em uma estrutura lógica preparada para implementação em banco de dados relacional.
+
+O modelo foi organizado em 14 tabelas, com definição de chaves primárias, chaves estrangeiras, restrições de integridade e normalização até a Terceira Forma Normal.
+
+Também foi desenvolvido um script SQL para o MySQL 8.0, contendo a estrutura do banco, dados fictícios e consultas para demonstrar seu funcionamento.
+
+Além do armazenamento dos dados, o projeto demonstra que as informações geradas pelos processos da FELAP podem futuramente ser utilizadas em soluções de BI e Inteligência Artificial.
+
+A solução proposta busca oferecer uma estrutura organizada, consistente e preparada para futuras evoluções do sistema de gestão da empresa.
