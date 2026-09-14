@@ -44,17 +44,19 @@ Considerando o escopo definido, os processos centrais identificados são:
 
 ### Fluxogramas
 
-
+#### Fluxo de Oficina / Assistência Técnica
 
 ![Fluxo de Oficina / Assistência Técnica](imagens/fluxo-oficina.png)
 
-
+#### Fluxo de Estoque de Peças
 
 ![Fluxo de Estoque de Peças](imagens/fluxo-estoque-pecas.png)
 
-
+#### Fluxo de Locação de Máquinas
 
 ![Fluxo de Locação de Máquinas](imagens/fluxo-locacao.png)
+
+
 
 ### Resumo dos processos
 
