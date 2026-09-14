@@ -290,7 +290,7 @@ O dicionário abaixo representa os principais atributos considerados na etapa co
 
 ## 7. Diagrama Entidade-Relacionamento (DER)
 
-![Diagrama Entidade-Relacionamento](DER/DER.png)
+![Diagrama Entidade-Relacionamento](DER/der_conceitual_felap%20(1).png)
 
 O DER representa as 14 entidades identificadas na modelagem conceitual, seus principais atributos e as cardinalidades dos relacionamentos.
 
