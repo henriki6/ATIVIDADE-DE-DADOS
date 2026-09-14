@@ -122,6 +122,186 @@ Armazena as categorias das máquinas.
 
 ---
 
+## 4.6 LOCACAO
+
+Armazena os registros de locação realizados pela FELAP.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_locacao | INT | PK |
+| id_cliente | INT | FK |
+| id_funcionario | INT | FK |
+| data_retirada | DATE | — |
+| data_devolucao | DATE | — |
+
+A tabela relaciona o cliente e o funcionário responsável pelo registro da locação.
+
+A data de devolução deve ser igual ou posterior à data de retirada.
+
+---
+
+## 4.7 ITEM_LOCACAO
+
+Armazena as máquinas incluídas em cada locação e o valor da diária.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_item_locacao | INT | PK |
+| id_locacao | INT | FK |
+| id_maquina | INT | FK |
+| valor_diaria | DECIMAL(12,2) | — |
+
+A tabela permite relacionar uma locação às máquinas utilizadas.
+
+O valor da diária é armazenado no item da locação porque pode variar de acordo com a máquina ou negociação realizada.
+
+---
+
+## 4.8 VENDA
+
+Armazena os registros de venda de máquinas.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_venda | INT | PK |
+| id_cliente | INT | FK |
+| id_funcionario | INT | FK |
+| data | DATE | — |
+| valor_total | DECIMAL(12,2) | — |
+
+A tabela registra o cliente responsável pela compra, o funcionário responsável pelo registro, a data e o valor total da venda.
+
+---
+
+## 4.9 ITEM_VENDA
+
+Armazena as máquinas incluídas em uma venda.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_item_venda | INT | PK |
+| id_venda | INT | FK |
+| id_maquina | INT | FK |
+| valor_venda | DECIMAL(12,2) | — |
+
+Cada item relaciona uma venda a uma máquina específica.
+
+O campo `valor_venda` registra o valor negociado para a máquina no momento da venda.
+
+A mesma máquina não deve ser registrada em mais de uma venda.
+
+---
+
+## 4.10 ORDEM_SERVICO
+
+Armazena as ordens de serviço relacionadas à manutenção e assistência técnica.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_ordem_servico | INT | PK |
+| id_cliente | INT | FK |
+| id_funcionario | INT | FK |
+| id_maquina | INT | FK |
+| diagnostico | TEXT | — |
+| status | VARCHAR(30) | — |
+
+A ordem de serviço relaciona o cliente, o funcionário responsável e a máquina atendida.
+
+O campo `diagnostico` registra as informações relacionadas ao problema identificado.
+
+O campo `status` permite acompanhar a situação da ordem de serviço.
+
+Exemplos de status:
+
+- ABERTA;
+- EM_DIAGNOSTICO;
+- AGUARDANDO_PECAS;
+- EM_MANUTENCAO;
+- CONCLUIDA;
+- CANCELADA.
+
+---
+
+## 4.11 ITEM_ORDEM_SERVICO
+
+Armazena as peças utilizadas em cada ordem de serviço.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_item_os | INT | PK |
+| id_ordem_servico | INT | FK |
+| id_peca | INT | FK |
+| quantidade_utilizada | INT | — |
+
+A tabela permite registrar quais peças foram utilizadas em cada ordem de serviço e a quantidade utilizada.
+
+Essa estrutura evita armazenar várias peças em uma única coluna da ordem de serviço.
+
+---
+
+## 4.12 PECA
+
+Armazena as peças utilizadas nos serviços e controladas pelo estoque.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_peca | INT | PK |
+| descricao | VARCHAR(150) | — |
+| quantidade_estoque | INT | — |
+
+O campo `quantidade_estoque` representa a quantidade atual disponível da peça.
+
+O estoque não deve possuir quantidade negativa.
+
+---
+
+## 4.13 MOVIMENTACAO_ESTOQUE
+
+Registra as entradas e saídas de peças do estoque.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_movimentacao | INT | PK |
+| id_peca | INT | FK |
+| tipo | VARCHAR(20) | — |
+| quantidade | INT | — |
+
+O campo `tipo` identifica se a movimentação representa uma:
+
+- ENTRADA;
+- SAIDA.
+
+A quantidade deve ser maior que zero.
+
+A tabela permite manter o histórico das movimentações relacionadas às peças.
+
+---
+
+## 4.14 PAGAMENTO
+
+Armazena os pagamentos relacionados aos processos da empresa.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_pagamento | INT | PK |
+| id_venda | INT | FK |
+| id_locacao | INT | FK |
+| id_ordem_servico | INT | FK |
+| valor | DECIMAL(12,2) | — |
+| forma_pagamento | VARCHAR(30) | — |
+
+Um pagamento pode estar relacionado a uma venda, uma locação ou uma ordem de serviço.
+
+A estrutura utiliza as três chaves estrangeiras como possibilidades de origem do pagamento, sendo permitido informar apenas uma origem por registro.
+
+O campo `forma_pagamento` registra a forma utilizada para realizar o pagamento.
+
+---
+
+
+
+---
+
 ## 4.5 MAQUINA
 
 Armazena as informações das máquinas.
