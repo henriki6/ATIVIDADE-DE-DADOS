@@ -1,15 +1,16 @@
 # Relatório Técnico — Entrega 2
+
 ## Projeto de Banco de Dados — FELAP Máquinas e Equipamentos LTDA
 
 ---
 
-## 1. Introdução
+# 1. Introdução
 
 Este relatório apresenta a evolução do projeto de banco de dados desenvolvido para a empresa FELAP Máquinas e Equipamentos LTDA.
 
 A Entrega 2 tem como objetivo transformar o modelo conceitual desenvolvido anteriormente em um modelo lógico relacional, definindo tabelas, chaves primárias, chaves estrangeiras, restrições de integridade e estruturas necessárias para futura implementação no Sistema Gerenciador de Banco de Dados (SGBD).
 
-Para a implementação foi escolhido o **MySQL 8.0**, devido à sua ampla utilização, suporte a restrições de integridade, facilidade de utilização e compatibilidade com ferramentas acadêmicas e profissionais.
+Para a implementação foi escolhido o MySQL 8.0, devido à sua ampla utilização, suporte a restrições de integridade, facilidade de utilização e compatibilidade com ferramentas acadêmicas e profissionais.
 
 O banco de dados proposto busca organizar informações relacionadas aos principais processos identificados na FELAP:
 
@@ -33,7 +34,7 @@ Os dados utilizados na implementação são fictícios e foram criados exclusiva
 
 O modelo conceitual desenvolvido na Entrega 1 foi revisado para sua transformação em um modelo lógico relacional.
 
-O modelo possui **14 entidades/tabelas principais**, responsáveis por representar os dados necessários aos processos de locação, venda, assistência técnica e controle de peças.
+O modelo possui 14 entidades/tabelas principais, responsáveis por representar os dados necessários aos processos de locação, venda, assistência técnica e controle de peças.
 
 As entidades utilizadas são:
 
@@ -120,7 +121,6 @@ Armazena as categorias das máquinas.
 | id_categoria | INT | PK |
 | descricao | VARCHAR(120) | UNIQUE |
 
-
 ---
 
 ## 4.5 MAQUINA
@@ -132,17 +132,17 @@ Armazena as máquinas comercializadas, alugadas e utilizadas nos processos de as
 | id_maquina | INT | PK |
 | id_marca | INT | FK |
 | id_categoria | INT | FK |
-| modelo | VARCHAR(100) | - |
+| modelo | VARCHAR(100) | — |
 | numero_serie | VARCHAR(80) | UNIQUE |
-| situacao_linha | VARCHAR(30) | - |
-| status | VARCHAR(30) | - |
+| situacao_linha | VARCHAR(30) | — |
+| status | VARCHAR(30) | — |
 
 A máquina possui relacionamento com Marca e Categoria e participa dos processos de locação, venda e ordem de serviço.
 
 O número de série deve ser único para cada máquina.
 
 O campo `situacao_linha` permite identificar se a máquina está em linha ou fora de linha, enquanto o campo `status` representa sua situação operacional atual.
- 
+
 ---
 
 ## 4.6 LOCACAO
@@ -342,7 +342,7 @@ As chaves primárias utilizadas no modelo são:
 | movimentacao_estoque | id_movimentacao |
 | pagamento | id_pagamento |
 
-As PKs são utilizadas para identificar cada registro de forma única dentro de sua respectiva tabela.
+As PKs identificam cada registro de forma única dentro de sua respectiva tabela.
 
 ---
 
@@ -500,11 +500,7 @@ O modelo atende à 1FN porque as informações foram separadas de acordo com sua
 
 Por exemplo, as peças utilizadas em uma ordem de serviço não são armazenadas em uma única coluna da tabela `ordem_servico`.
 
-Foi criada a tabela:
-
-`item_ordem_servico`
-
-Ela permite registrar:
+Foi criada a tabela `item_ordem_servico`, que permite registrar:
 
 - a ordem de serviço;
 - a peça utilizada;
@@ -520,18 +516,14 @@ A Segunda Forma Normal exige que os atributos não pertencentes à chave dependa
 
 No modelo proposto, as informações específicas dos itens foram mantidas nas respectivas tabelas.
 
-Por exemplo:
-
-`item_locacao`
-
-possui:
+Por exemplo, `item_locacao` possui:
 
 - id_item_locacao;
 - id_locacao;
 - id_maquina;
 - valor_diaria.
 
-Já as informações do cliente ficam na tabela `cliente`, enquanto as informações da máquina ficam na tabela `maquina`.
+As informações do cliente ficam na tabela `cliente`, enquanto as informações da máquina ficam na tabela `maquina`.
 
 Da mesma forma, os dados específicos de uma venda ficam separados entre:
 
@@ -601,8 +593,6 @@ Ela participa de processos de:
 
 Por isso, a entidade `maquina` possui relacionamentos com diferentes processos.
 
----
-
 ## 12.2 Controle de status da máquina
 
 O campo `status` foi mantido na tabela `maquina` para centralizar a situação operacional atual.
@@ -616,8 +606,6 @@ Exemplos:
 - INDISPONIVEL.
 
 Isso facilita consultas sobre disponibilidade e situação das máquinas.
-
----
 
 ## 12.3 Separação dos processos
 
@@ -633,8 +621,6 @@ A separação facilita:
 - controle de regras;
 - expansão futura do sistema.
 
----
-
 ## 12.4 Uso das tabelas de itens
 
 Foram utilizadas tabelas intermediárias para representar os itens de cada processo:
@@ -645,8 +631,6 @@ Foram utilizadas tabelas intermediárias para representar os itens de cada proce
 
 Essa estrutura permite relacionar os processos com máquinas e peças sem duplicar informações.
 
----
-
 ## 12.5 Controle de estoque
 
 A tabela `peca` armazena o estoque atual da peça.
@@ -654,8 +638,6 @@ A tabela `peca` armazena o estoque atual da peça.
 A tabela `movimentacao_estoque` registra entradas e saídas.
 
 Essa separação permite consultar tanto o saldo atual quanto o histórico de movimentações.
-
----
 
 ## 12.6 Integridade dos dados
 
@@ -675,7 +657,7 @@ Essas restrições ajudam a evitar registros inválidos ou inconsistentes.
 
 # 13. Implementação no MySQL 8.0
 
-O banco foi planejado para ser implementado no **MySQL 8.0**.
+O banco foi planejado para ser implementado no MySQL 8.0.
 
 O script SQL contém:
 
@@ -693,7 +675,7 @@ O script SQL contém:
 
 O arquivo SQL está disponível no repositório:
 
-[Script SQL — FELAP Entrega 2](../sql/felap_entrega2_mysql.sql)
+`entrega-2/sql/felap_entrega2_mysql.sql`
 
 ---
 
@@ -723,11 +705,9 @@ O objetivo é permitir a execução das consultas e demonstrar o funcionamento d
 
 # 15. Consultas SQL
 
-As consultas SQL foram elaboradas para demonstrar o funcionamento do banco de dados e permitir a obtenção de informações relevantes para a operação e gestão da FELAP.
+As consultas SQL foram elaboradas para demonstrar a utilização prática do banco de dados.
 
-## 15.1 Consulta com JOIN
-
-Consulta para apresentar as máquinas cadastradas juntamente com suas respectivas marcas e categorias.
+## 15.1 Consulta de máquinas com marca e categoria
 
 ```sql
 SELECT
@@ -742,268 +722,3 @@ INNER JOIN marca ma
     ON m.id_marca = ma.id_marca
 INNER JOIN categoria c
     ON m.id_categoria = c.id_categoria;
-```
-
-### 15.2 Consulta de máquinas disponíveis
-
-```sql
-SELECT
-    id_maquina,
-    modelo,
-    numero_serie,
-    status
-FROM maquina
-WHERE status = 'DISPONIVEL';
-```
-
-### 15.3 Consulta de máquinas em manutenção
-
-```sql
-SELECT
-    id_maquina,
-    modelo,
-    numero_serie,
-    status
-FROM maquina
-WHERE status = 'EM_MANUTENCAO';
-```
-
-### 15.4 Consulta de estoque de peças
-
-```sql
-SELECT
-    id_peca,
-    descricao,
-    quantidade_estoque
-FROM peca
-ORDER BY quantidade_estoque ASC;
-```
-
-### 15.5 Consulta de ordens de serviço
-
-```sql
-SELECT
-    os.id_ordem_servico,
-    c.nome AS cliente,
-    m.modelo AS maquina,
-    m.numero_serie,
-    os.diagnostico,
-    os.status
-FROM ordem_servico os
-INNER JOIN cliente c
-    ON os.id_cliente = c.id_cliente
-INNER JOIN maquina m
-    ON os.id_maquina = m.id_maquina;
-```
-
-### 15.6 Consulta de locações
-
-```sql
-SELECT
-    l.id_locacao,
-    c.nome AS cliente,
-    f.nome AS funcionario,
-    l.data_retirada,
-    l.data_devolucao
-FROM locacao l
-INNER JOIN cliente c
-    ON l.id_cliente = c.id_cliente
-INNER JOIN funcionario f
-    ON l.id_funcionario = f.id_funcionario;
-```
-
-### 15.7 Consulta de vendas
-
-```sql
-SELECT
-    v.id_venda,
-    c.nome AS cliente,
-    f.nome AS funcionario,
-    v.data,
-    v.valor_total
-FROM venda v
-INNER JOIN cliente c
-    ON v.id_cliente = c.id_cliente
-INNER JOIN funcionario f
-    ON v.id_funcionario = f.id_funcionario
-ORDER BY v.data DESC;
-```
-
-### 15.8 Consulta de movimentações de estoque
-
-```sql
-SELECT
-    me.id_movimentacao,
-    p.descricao AS peca,
-    me.tipo,
-    me.quantidade
-FROM movimentacao_estoque me
-INNER JOIN peca p
-    ON me.id_peca = p.id_peca
-ORDER BY me.id_movimentacao;
-```
-
-### 15.9 Consulta de pagamentos
-
-```sql
-SELECT
-    id_pagamento,
-    id_venda,
-    id_locacao,
-    id_ordem_servico,
-    valor,
-    forma_pagamento
-FROM pagamento
-ORDER BY id_pagamento;
-```
-
-### Objetivo das consultas
-
-As consultas demonstram a utilização de `SELECT`, `WHERE`, `ORDER BY` e `INNER JOIN`, permitindo consultar informações importantes dos processos da FELAP.
-
-## 15.2 Consulta de máquinas disponíveis
-
-Permite identificar as máquinas que estão disponíveis para locação ou utilização.
-
-```sql
-SELECT
-    id_maquina,
-    modelo,
-    numero_serie,
-    status
-FROM maquina
-WHERE status = 'DISPONIVEL';
-```
-
-## 15.3 Consulta de máquinas em manutenção
-
-Permite identificar as máquinas que estão atualmente em manutenção.
-
-```sql
-SELECT
-    id_maquina,
-    modelo,
-    numero_serie,
-    status
-FROM maquina
-WHERE status = 'EM_MANUTENCAO';
-```
-
-## 15.4 Consulta de estoque de peças
-
-Apresenta as peças cadastradas e suas respectivas quantidades em estoque.
-
-```sql
-SELECT
-    id_peca,
-    descricao,
-    quantidade_estoque
-FROM peca
-ORDER BY quantidade_estoque ASC;
-```
-
-## 15.5 Consulta de peças com estoque baixo
-
-Permite identificar peças que precisam de atenção para reposição.
-
-```sql
-SELECT
-    id_peca,
-    descricao,
-    quantidade_estoque
-FROM peca
-WHERE quantidade_estoque <= 5
-ORDER BY quantidade_estoque ASC;
-```
-
-## 15.6 Consulta de ordens de serviço
-
-Apresenta as ordens de serviço juntamente com a máquina atendida e o cliente.
-
-```sql
-SELECT
-    os.id_ordem_servico,
-    c.nome AS cliente,
-    m.modelo AS maquina,
-    m.numero_serie,
-    os.diagnostico,
-    os.status
-FROM ordem_servico os
-INNER JOIN cliente c
-    ON os.id_cliente = c.id_cliente
-INNER JOIN maquina m
-    ON os.id_maquina = m.id_maquina;
-```
-
-## 15.7 Consulta de locações
-
-Apresenta os registros de locação, incluindo cliente e funcionário responsável.
-
-```sql
-SELECT
-    l.id_locacao,
-    c.nome AS cliente,
-    f.nome AS funcionario,
-    l.data_retirada,
-    l.data_devolucao
-FROM locacao l
-INNER JOIN cliente c
-    ON l.id_cliente = c.id_cliente
-INNER JOIN funcionario f
-    ON l.id_funcionario = f.id_funcionario;
-```
-
-## 15.8 Consulta de vendas
-
-Apresenta as vendas realizadas, seus clientes e funcionários responsáveis.
-
-```sql
-SELECT
-    v.id_venda,
-    c.nome AS cliente,
-    f.nome AS funcionario,
-    v.data,
-    v.valor_total
-FROM venda v
-INNER JOIN cliente c
-    ON v.id_cliente = c.id_cliente
-INNER JOIN funcionario f
-    ON v.id_funcionario = f.id_funcionario
-ORDER BY v.data DESC;
-```
-
-## 15.9 Consulta de movimentações de estoque
-
-Permite acompanhar as entradas e saídas de peças.
-
-```sql
-SELECT
-    me.id_movimentacao,
-    p.descricao AS peca,
-    me.tipo,
-    me.quantidade
-FROM movimentacao_estoque me
-INNER JOIN peca p
-    ON me.id_peca = p.id_peca
-ORDER BY me.id_movimentacao;
-```
-
-## 15.10 Consulta de pagamentos
-
-Apresenta os pagamentos registrados no sistema.
-
-```sql
-SELECT
-    id_pagamento,
-    id_venda,
-    id_locacao,
-    id_ordem_servico,
-    valor,
-    forma_pagamento
-FROM pagamento
-ORDER BY id_pagamento;
-```
-
-### Objetivo das consultas
-
-As consultas demonstram a utilização de comandos `SELECT`, `WHERE`, `ORDER BY` e `INNER JOIN`, permitindo relacionar informações de diferentes tabelas e gerar dados úteis para acompanhamento operacional e gerencial da FELAP.
