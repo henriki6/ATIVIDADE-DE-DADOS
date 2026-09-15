@@ -123,7 +123,7 @@ Armazena as categorias das máquinas.
 
 ---
 
-## 4.5 MAQUINA
+o no item da locação porque pode var## 4.5 MAQUINA
 
 Armazena as máquinas comercializadas, alugadas e utilizadas nos processos de assistência técnica da FELAP.
 
@@ -176,7 +176,7 @@ Armazena as máquinas incluídas em cada locação e o valor da diária.
 
 A tabela permite relacionar uma locação às máquinas utilizadas.
 
-O valor da diária é armazenado no item da locação porque pode variar de acordo com a máquina ou negociação realizada.
+O valor da diária é armazenadiar de acordo com a máquina ou negociação realizada.
 
 ---
 
