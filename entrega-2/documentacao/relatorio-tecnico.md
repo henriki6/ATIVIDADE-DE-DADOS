@@ -722,3 +722,426 @@ INNER JOIN marca ma
     ON m.id_marca = ma.id_marca
 INNER JOIN categoria c
     ON m.id_categoria = c.id_categoria;
+
+15.2 Consulta de máquinas disponíveis
+SELECT
+    id_maquina,
+    modelo,
+    numero_serie,
+    status
+FROM maquina
+WHERE status = 'DISPONIVEL';
+
+Essa consulta auxilia o setor responsável pela locação a identificar máquinas disponíveis.
+
+15.3 Consulta de máquinas em manutenção
+SELECT
+    id_maquina,
+    modelo,
+    numero_serie,
+    status
+FROM maquina
+WHERE status = 'EM_MANUTENCAO';
+
+Permite identificar máquinas que estão indisponíveis devido à manutenção.
+
+15.4 Consulta de estoque
+SELECT
+    id_peca,
+    descricao,
+    quantidade_estoque
+FROM peca
+ORDER BY quantidade_estoque ASC;
+
+Permite visualizar as peças ordenadas pela quantidade disponível.
+
+15.5 Consulta de ordens de serviço
+SELECT
+    os.id_ordem_servico,
+    c.nome AS cliente,
+    m.modelo AS maquina,
+    os.diagnostico,
+    os.status
+FROM ordem_servico os
+INNER JOIN cliente c
+    ON os.id_cliente = c.id_cliente
+INNER JOIN maquina m
+    ON os.id_maquina = m.id_maquina;
+
+Essa consulta apresenta as ordens de serviço e os principais dados relacionados.
+
+15.6 Consulta de locações
+SELECT
+    l.id_locacao,
+    c.nome AS cliente,
+    f.nome AS funcionario,
+    l.data_retirada,
+    l.data_devolucao
+FROM locacao l
+INNER JOIN cliente c
+    ON l.id_cliente = c.id_cliente
+INNER JOIN funcionario f
+    ON l.id_funcionario = f.id_funcionario;
+
+Permite consultar os registros de locação e os responsáveis.
+
+15.7 Consulta de vendas
+SELECT
+    v.id_venda,
+    c.nome AS cliente,
+    f.nome AS funcionario,
+    v.data,
+    v.valor_total
+FROM venda v
+INNER JOIN cliente c
+    ON v.id_cliente = c.id_cliente
+INNER JOIN funcionario f
+    ON v.id_funcionario = f.id_funcionario;
+
+Permite acompanhar as vendas registradas no sistema.
+
+15.8 Consulta de movimentações de estoque
+SELECT
+    me.id_movimentacao,
+    p.descricao,
+    me.tipo,
+    me.quantidade
+FROM movimentacao_estoque me
+INNER JOIN peca p
+    ON me.id_peca = p.id_peca
+ORDER BY me.id_movimentacao;
+
+Permite visualizar o histórico de entradas e saídas registradas.
+
+15.9 Consulta de pagamentos
+SELECT
+    id_pagamento,
+    valor,
+    forma_pagamento,
+    id_venda,
+    id_locacao,
+    id_ordem_servico
+FROM pagamento
+ORDER BY id_pagamento;
+
+Permite identificar os pagamentos e seus respectivos processos de origem.
+
+16. Consultas de Gestão
+
+As consultas de gestão têm como objetivo transformar os dados armazenados no banco em informações úteis para tomada de decisão.
+
+16.1 Quantidade de máquinas por status
+SELECT
+    status,
+    COUNT(*) AS quantidade
+FROM maquina
+GROUP BY status
+ORDER BY quantidade DESC;
+
+Essa consulta permite identificar quantas máquinas estão disponíveis, alugadas, em manutenção, vendidas ou indisponíveis.
+
+16.2 Valor total das vendas
+SELECT
+    SUM(valor_total) AS total_vendas
+FROM venda;
+
+Permite visualizar o valor acumulado das vendas registradas.
+
+16.3 Peças com estoque reduzido
+SELECT
+    id_peca,
+    descricao,
+    quantidade_estoque
+FROM peca
+WHERE quantidade_estoque <= 5
+ORDER BY quantidade_estoque ASC;
+
+Pode auxiliar a equipe a identificar peças que precisam de reposição.
+
+16.4 Ordens de serviço por status
+SELECT
+    status,
+    COUNT(*) AS quantidade
+FROM ordem_servico
+GROUP BY status
+ORDER BY quantidade DESC;
+
+Permite acompanhar a situação das ordens de serviço.
+
+17. Consultas de Auditoria
+
+As consultas de auditoria permitem verificar situações que podem indicar inconsistências ou necessidade de conferência.
+
+17.1 Máquinas com número de série
+SELECT
+    id_maquina,
+    modelo,
+    numero_serie
+FROM maquina
+ORDER BY numero_serie;
+
+Permite conferir os números de série cadastrados.
+
+17.2 Movimentações de estoque
+SELECT
+    me.id_movimentacao,
+    p.descricao,
+    me.tipo,
+    me.quantidade
+FROM movimentacao_estoque me
+INNER JOIN peca p
+    ON me.id_peca = p.id_peca
+ORDER BY me.id_movimentacao;
+
+Permite acompanhar as entradas e saídas de peças.
+
+17.3 Máquinas atualmente vendidas
+SELECT
+    id_maquina,
+    modelo,
+    numero_serie,
+    status
+FROM maquina
+WHERE status = 'VENDIDA';
+
+Permite conferir as máquinas que já foram marcadas como vendidas.
+
+18. UPDATE e DELETE
+
+O projeto também contempla comandos de alteração e exclusão de registros.
+
+18.1 UPDATE
+
+Exemplo de alteração do status de uma máquina:
+
+UPDATE maquina
+SET status = 'EM_MANUTENCAO'
+WHERE id_maquina = 3;
+
+O comando deve ser utilizado com cuidado, sempre verificando o registro que será alterado.
+
+18.2 DELETE
+
+Exemplo de exclusão de uma movimentação específica:
+
+DELETE FROM movimentacao_estoque
+WHERE id_movimentacao = 10;
+
+A exclusão deve respeitar as restrições de integridade referencial existentes no banco.
+
+Em ambiente real, operações de exclusão devem seguir as regras de auditoria e autorização da empresa.
+
+19. Potencial de BI
+
+O banco de dados possui potencial para utilização em ferramentas de Business Intelligence (BI), pois reúne informações de máquinas, clientes, vendas, locações, ordens de serviço, peças e pagamentos.
+
+A utilização de BI poderia transformar os dados operacionais em indicadores para apoio à gestão.
+
+Entre as informações estratégicas possíveis estão:
+
+quantidade de máquinas disponíveis;
+quantidade de máquinas em manutenção;
+máquinas mais alugadas;
+vendas realizadas por período;
+faturamento por período;
+peças mais utilizadas;
+peças com baixo estoque;
+quantidade de ordens de serviço;
+ordens de serviço por status;
+formas de pagamento mais utilizadas.
+
+Uma futura solução de BI poderia utilizar o banco MySQL como fonte de dados e uma ferramenta de visualização para criação de dashboards.
+
+20. KPIs Propostos
+
+Os principais indicadores de desempenho (KPIs) que podem ser acompanhados são:
+
+KPI	Objetivo
+Total de vendas	Medir o valor das vendas realizadas
+Máquinas disponíveis	Acompanhar a capacidade disponível para locação
+Máquinas alugadas	Medir utilização da frota
+Máquinas em manutenção	Acompanhar indisponibilidade
+Ordens de serviço abertas	Medir demanda da assistência técnica
+Ordens aguardando peças	Identificar impacto do estoque nos serviços
+Peças em baixo estoque	Apoiar decisões de reposição
+Valor médio das vendas	Avaliar o comportamento comercial
+Quantidade de locações	Medir utilização do serviço de locação
+
+Esses indicadores poderiam ser apresentados em dashboards gerenciais.
+
+21. Possibilidades de IA
+
+Após a estruturação do banco, os dados também podem ser utilizados futuramente em soluções de Inteligência Artificial.
+
+Algumas possibilidades são:
+
+21.1 Previsão de demanda de peças
+
+A partir do histórico de utilização das peças, um modelo poderia estimar quais peças possuem maior probabilidade de serem utilizadas no futuro.
+
+21.2 Previsão de manutenção
+
+Históricos de ordens de serviço poderiam ser analisados para identificar padrões relacionados à necessidade de manutenção.
+
+21.3 Recomendação de reposição de estoque
+
+A IA poderia recomendar quais peças devem ser repostas e em qual quantidade, considerando o histórico de consumo.
+
+21.4 Análise de disponibilidade
+
+Um sistema inteligente poderia analisar locações, manutenção e vendas para auxiliar na previsão de disponibilidade das máquinas.
+
+21.5 Apoio à gestão
+
+Modelos analíticos poderiam gerar alertas sobre baixo estoque, excesso de máquinas em manutenção ou redução da utilização da frota.
+
+Essas aplicações são propostas futuras e dependem de dados históricos suficientes e de validação pela empresa.
+
+22. Arquitetura de BI e IA
+
+Uma arquitetura futura poderia ser organizada da seguinte forma:
+
+BANCO MYSQL
+     |
+     v
+CAMADA DE TRATAMENTO
+     |
+     v
+DATASET / DATA MART
+     |
+     +----------------------+
+     |                      |
+     v                      v
+    BI                     IA
+     |                      |
+     v                      v
+DASHBOARDS             PREVISÕES
+INDICADORES            RECOMENDAÇÕES
+     |                      |
+     +----------+-----------+
+                |
+                v
+          APOIO À DECISÃO
+
+O banco operacional continuaria sendo responsável pelo armazenamento dos dados.
+
+A camada de tratamento prepararia as informações para análise.
+
+O BI seria utilizado para indicadores e dashboards, enquanto a IA poderia ser utilizada para previsões, classificações e recomendações.
+
+23. Benefícios Esperados
+
+A implantação da solução proposta pode proporcionar:
+
+maior organização dos dados;
+redução de duplicidade;
+maior controle sobre as máquinas;
+melhor acompanhamento das locações;
+melhor controle das vendas;
+histórico das ordens de serviço;
+maior controle das peças;
+acompanhamento das movimentações de estoque;
+melhoria das consultas gerenciais;
+apoio à tomada de decisão;
+possibilidade de utilização futura de BI e IA.
+24. Regras de Negócio Consideradas
+
+As principais regras consideradas no desenvolvimento são:
+
+O número de série de uma máquina deve ser único.
+Uma máquina não deve ser registrada em mais de uma venda.
+A data de devolução de uma locação deve ser igual ou posterior à data de retirada.
+O estoque de peças não deve possuir quantidade negativa.
+A quantidade de uma movimentação de estoque deve ser maior que zero.
+Uma ordem de serviço pode utilizar várias peças.
+Uma peça pode participar de várias ordens de serviço.
+Uma peça pode possuir várias movimentações de estoque.
+Uma máquina pode possuir várias ordens de serviço ao longo de sua vida útil.
+Um pagamento deve estar relacionado a uma única origem entre venda, locação ou ordem de serviço.
+Máquinas em manutenção não devem ser disponibilizadas para locação enquanto permanecerem nesse status.
+Máquinas vendidas não devem voltar a ser disponibilizadas para locação.
+As regras relacionadas à compatibilidade entre máquinas e peças devem ser validadas na pesquisa de campo antes de uma implementação definitiva.
+
+As regras operacionais que dependem de processos da aplicação, como impedir uma locação de máquina indisponível, deverão ser reforçadas pela aplicação ou por mecanismos adicionais do banco, como triggers, conforme a necessidade da versão final.
+
+25. Pontos de Validação e Evolução
+
+Alguns pontos do modelo devem continuar sendo validados durante a pesquisa de campo e a evolução do projeto.
+
+Entre eles:
+
+existência de necessidade de registrar data específica em cada movimentação de estoque;
+necessidade de registrar valor de orçamento e aprovação do cliente em ordens de serviço;
+regras reais de compatibilidade entre peças e máquinas;
+regras para máquinas fora de linha;
+quantidade e formas reais de pagamento;
+regras de acesso por funcionário;
+necessidade de histórico detalhado de alterações;
+necessidade de novos atributos identificados durante a pesquisa de campo.
+
+Esses pontos não foram inventados no modelo sem validação, pois a intenção é manter a solução coerente com as informações obtidas junto à organização.
+
+26. Uso de Inteligência Artificial
+
+A Inteligência Artificial foi utilizada como apoio ao desenvolvimento do projeto.
+
+26.1 Ferramentas utilizadas
+
+Foram utilizadas ferramentas de IA para:
+
+levantamento inicial de ideias;
+organização da estrutura do banco;
+revisão do modelo lógico;
+apoio na definição de PKs e FKs;
+revisão de consultas SQL;
+identificação de possíveis inconsistências;
+elaboração de sugestões para BI e IA.
+26.2 Forma de utilização
+
+A IA foi utilizada como ferramenta de apoio e revisão, e não como substituta da análise do grupo.
+
+As sugestões foram comparadas com:
+
+o modelo conceitual;
+as regras de negócio;
+a estrutura definida para a FELAP;
+o script SQL;
+as necessidades da Entrega 2.
+
+Informações que não estavam confirmadas pela pesquisa de campo foram tratadas como propostas ou pontos de validação.
+
+26.3 Reflexão sobre o uso da IA
+
+O uso da IA facilitou a organização do trabalho e ajudou a identificar problemas de estrutura, mas as respostas não foram aceitas automaticamente.
+
+Foi necessário revisar e adaptar as sugestões para manter coerência entre o modelo conceitual, o modelo lógico, o SQL e as regras de negócio.
+
+Essa revisão é importante porque uma resposta gerada por IA pode apresentar soluções tecnicamente possíveis, mas que não necessariamente representam o funcionamento real da organização.
+
+27. Reflexão Crítica
+
+O desenvolvimento da Entrega 2 mostrou a importância de manter consistência entre as diferentes etapas do projeto.
+
+O modelo lógico não deve ser construído de forma isolada. Ele precisa estar relacionado ao modelo conceitual, às regras de negócio e às necessidades identificadas na organização.
+
+A normalização contribuiu para organizar as informações e reduzir redundâncias.
+
+A definição das PKs e FKs permitiu estabelecer os relacionamentos entre as tabelas e melhorar a integridade dos dados.
+
+A criação de dados fictícios e consultas SQL também permitiu verificar se o modelo é capaz de representar situações relacionadas à operação da FELAP.
+
+A utilização de IA contribuiu para revisão e geração de ideias, porém foi necessário avaliar criticamente cada sugestão antes de incorporá-la ao projeto.
+
+28. Conclusão
+
+A Entrega 2 transformou o modelo conceitual da FELAP em uma estrutura lógica relacional composta por 14 tabelas.
+
+Foram definidas chaves primárias, chaves estrangeiras, tipos de dados, restrições de integridade e relacionamentos.
+
+O modelo foi organizado buscando atender às três primeiras formas normais e permitir uma futura implementação no MySQL 8.0.
+
+Também foram desenvolvidos dados fictícios e consultas SQL para demonstrar o funcionamento do banco.
+
+Além da operação básica, o projeto apresenta potencial para utilização de BI e Inteligência Artificial, principalmente em análises de vendas, locações, manutenção, estoque e disponibilidade de máquinas.
+
+A próxima evolução do projeto deverá considerar os resultados da pesquisa de campo e os testes da implementação SQL, permitindo ajustar o modelo às necessidades reais da organização.
