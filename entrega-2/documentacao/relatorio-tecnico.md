@@ -120,6 +120,29 @@ Armazena as categorias das máquinas.
 | id_categoria | INT | PK |
 | descricao | VARCHAR(120) | UNIQUE |
 
+
+---
+
+## 4.5 MAQUINA
+
+Armazena as máquinas comercializadas, alugadas e utilizadas nos processos de assistência técnica da FELAP.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_maquina | INT | PK |
+| id_marca | INT | FK |
+| id_categoria | INT | FK |
+| modelo | VARCHAR(100) | - |
+| numero_serie | VARCHAR(80) | UNIQUE |
+| situacao_linha | VARCHAR(30) | - |
+| status | VARCHAR(30) | - |
+
+A máquina possui relacionamento com Marca e Categoria e participa dos processos de locação, venda e ordem de serviço.
+
+O número de série deve ser único para cada máquina.
+
+O campo `situacao_linha` permite identificar se a máquina está em linha ou fora de linha, enquanto o campo `status` representa sua situação operacional atual.
+ 
 ---
 
 ## 4.6 LOCACAO
@@ -295,38 +318,6 @@ Um pagamento pode estar relacionado a uma venda, uma locação ou uma ordem de s
 A estrutura utiliza as três chaves estrangeiras como possibilidades de origem do pagamento, sendo permitido informar apenas uma origem por registro.
 
 O campo `forma_pagamento` registra a forma utilizada para realizar o pagamento.
-
----
-
-
-
----
-
-## 4.5 MAQUINA
-
-Armazena as informações das máquinas.
-
-| Campo | Tipo | Chave |
-|---|---|---|
-| id_maquina | INT | PK |
-| id_marca | INT | FK |
-| id_categoria | INT | FK |
-| modelo | VARCHAR(120) | — |
-| numero_serie | VARCHAR(80) | UNIQUE |
-| situacao_linha | VARCHAR(30) | — |
-| status | VARCHAR(30) | — |
-
-O campo `numero_serie` é único para evitar o cadastro duplicado de uma mesma máquina.
-
-O campo `situacao_linha` permite diferenciar máquinas em linha e fora de linha.
-
-O campo `status` representa a situação operacional da máquina, como:
-
-- DISPONIVEL;
-- ALUGADA;
-- EM_MANUTENCAO;
-- VENDIDA;
-- INDISPONIVEL.
 
 ---
 
@@ -728,3 +719,291 @@ Os dados não representam informações pessoais reais de clientes ou funcionár
 
 O objetivo é permitir a execução das consultas e demonstrar o funcionamento do modelo sem exposição de dados pessoais.
 
+---
+
+# 15. Consultas SQL
+
+As consultas SQL foram elaboradas para demonstrar o funcionamento do banco de dados e permitir a obtenção de informações relevantes para a operação e gestão da FELAP.
+
+## 15.1 Consulta com JOIN
+
+Consulta para apresentar as máquinas cadastradas juntamente com suas respectivas marcas e categorias.
+
+```sql
+SELECT
+    m.id_maquina,
+    m.modelo,
+    m.numero_serie,
+    ma.nome AS marca,
+    c.descricao AS categoria,
+    m.status
+FROM maquina m
+INNER JOIN marca ma
+    ON m.id_marca = ma.id_marca
+INNER JOIN categoria c
+    ON m.id_categoria = c.id_categoria;
+```
+
+### 15.2 Consulta de máquinas disponíveis
+
+```sql
+SELECT
+    id_maquina,
+    modelo,
+    numero_serie,
+    status
+FROM maquina
+WHERE status = 'DISPONIVEL';
+```
+
+### 15.3 Consulta de máquinas em manutenção
+
+```sql
+SELECT
+    id_maquina,
+    modelo,
+    numero_serie,
+    status
+FROM maquina
+WHERE status = 'EM_MANUTENCAO';
+```
+
+### 15.4 Consulta de estoque de peças
+
+```sql
+SELECT
+    id_peca,
+    descricao,
+    quantidade_estoque
+FROM peca
+ORDER BY quantidade_estoque ASC;
+```
+
+### 15.5 Consulta de ordens de serviço
+
+```sql
+SELECT
+    os.id_ordem_servico,
+    c.nome AS cliente,
+    m.modelo AS maquina,
+    m.numero_serie,
+    os.diagnostico,
+    os.status
+FROM ordem_servico os
+INNER JOIN cliente c
+    ON os.id_cliente = c.id_cliente
+INNER JOIN maquina m
+    ON os.id_maquina = m.id_maquina;
+```
+
+### 15.6 Consulta de locações
+
+```sql
+SELECT
+    l.id_locacao,
+    c.nome AS cliente,
+    f.nome AS funcionario,
+    l.data_retirada,
+    l.data_devolucao
+FROM locacao l
+INNER JOIN cliente c
+    ON l.id_cliente = c.id_cliente
+INNER JOIN funcionario f
+    ON l.id_funcionario = f.id_funcionario;
+```
+
+### 15.7 Consulta de vendas
+
+```sql
+SELECT
+    v.id_venda,
+    c.nome AS cliente,
+    f.nome AS funcionario,
+    v.data,
+    v.valor_total
+FROM venda v
+INNER JOIN cliente c
+    ON v.id_cliente = c.id_cliente
+INNER JOIN funcionario f
+    ON v.id_funcionario = f.id_funcionario
+ORDER BY v.data DESC;
+```
+
+### 15.8 Consulta de movimentações de estoque
+
+```sql
+SELECT
+    me.id_movimentacao,
+    p.descricao AS peca,
+    me.tipo,
+    me.quantidade
+FROM movimentacao_estoque me
+INNER JOIN peca p
+    ON me.id_peca = p.id_peca
+ORDER BY me.id_movimentacao;
+```
+
+### 15.9 Consulta de pagamentos
+
+```sql
+SELECT
+    id_pagamento,
+    id_venda,
+    id_locacao,
+    id_ordem_servico,
+    valor,
+    forma_pagamento
+FROM pagamento
+ORDER BY id_pagamento;
+```
+
+### Objetivo das consultas
+
+As consultas demonstram a utilização de `SELECT`, `WHERE`, `ORDER BY` e `INNER JOIN`, permitindo consultar informações importantes dos processos da FELAP.
+
+## 15.2 Consulta de máquinas disponíveis
+
+Permite identificar as máquinas que estão disponíveis para locação ou utilização.
+
+```sql
+SELECT
+    id_maquina,
+    modelo,
+    numero_serie,
+    status
+FROM maquina
+WHERE status = 'DISPONIVEL';
+```
+
+## 15.3 Consulta de máquinas em manutenção
+
+Permite identificar as máquinas que estão atualmente em manutenção.
+
+```sql
+SELECT
+    id_maquina,
+    modelo,
+    numero_serie,
+    status
+FROM maquina
+WHERE status = 'EM_MANUTENCAO';
+```
+
+## 15.4 Consulta de estoque de peças
+
+Apresenta as peças cadastradas e suas respectivas quantidades em estoque.
+
+```sql
+SELECT
+    id_peca,
+    descricao,
+    quantidade_estoque
+FROM peca
+ORDER BY quantidade_estoque ASC;
+```
+
+## 15.5 Consulta de peças com estoque baixo
+
+Permite identificar peças que precisam de atenção para reposição.
+
+```sql
+SELECT
+    id_peca,
+    descricao,
+    quantidade_estoque
+FROM peca
+WHERE quantidade_estoque <= 5
+ORDER BY quantidade_estoque ASC;
+```
+
+## 15.6 Consulta de ordens de serviço
+
+Apresenta as ordens de serviço juntamente com a máquina atendida e o cliente.
+
+```sql
+SELECT
+    os.id_ordem_servico,
+    c.nome AS cliente,
+    m.modelo AS maquina,
+    m.numero_serie,
+    os.diagnostico,
+    os.status
+FROM ordem_servico os
+INNER JOIN cliente c
+    ON os.id_cliente = c.id_cliente
+INNER JOIN maquina m
+    ON os.id_maquina = m.id_maquina;
+```
+
+## 15.7 Consulta de locações
+
+Apresenta os registros de locação, incluindo cliente e funcionário responsável.
+
+```sql
+SELECT
+    l.id_locacao,
+    c.nome AS cliente,
+    f.nome AS funcionario,
+    l.data_retirada,
+    l.data_devolucao
+FROM locacao l
+INNER JOIN cliente c
+    ON l.id_cliente = c.id_cliente
+INNER JOIN funcionario f
+    ON l.id_funcionario = f.id_funcionario;
+```
+
+## 15.8 Consulta de vendas
+
+Apresenta as vendas realizadas, seus clientes e funcionários responsáveis.
+
+```sql
+SELECT
+    v.id_venda,
+    c.nome AS cliente,
+    f.nome AS funcionario,
+    v.data,
+    v.valor_total
+FROM venda v
+INNER JOIN cliente c
+    ON v.id_cliente = c.id_cliente
+INNER JOIN funcionario f
+    ON v.id_funcionario = f.id_funcionario
+ORDER BY v.data DESC;
+```
+
+## 15.9 Consulta de movimentações de estoque
+
+Permite acompanhar as entradas e saídas de peças.
+
+```sql
+SELECT
+    me.id_movimentacao,
+    p.descricao AS peca,
+    me.tipo,
+    me.quantidade
+FROM movimentacao_estoque me
+INNER JOIN peca p
+    ON me.id_peca = p.id_peca
+ORDER BY me.id_movimentacao;
+```
+
+## 15.10 Consulta de pagamentos
+
+Apresenta os pagamentos registrados no sistema.
+
+```sql
+SELECT
+    id_pagamento,
+    id_venda,
+    id_locacao,
+    id_ordem_servico,
+    valor,
+    forma_pagamento
+FROM pagamento
+ORDER BY id_pagamento;
+```
+
+### Objetivo das consultas
+
+As consultas demonstram a utilização de comandos `SELECT`, `WHERE`, `ORDER BY` e `INNER JOIN`, permitindo relacionar informações de diferentes tabelas e gerar dados úteis para acompanhamento operacional e gerencial da FELAP.
