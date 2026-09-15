@@ -125,23 +125,204 @@ Armazena as categorias das máquinas.
 
 ## 4.5 MAQUINA
 
-4.1 CLIENTE
-4.2 FUNCIONARIO
-4.3 MARCA
-4.4 CATEGORIA
-4.5 MAQUINA
-4.6 LOCACAO
-4.7 ITEM_LOCACAO
-4.8 VENDA
-4.9 ITEM_VENDA
-4.10 ORDEM_SERVICO
-4.11 ITEM_ORDEM_SERVICO
-4.12 PECA
-4.13 MOVIMENTACAO_ESTOQUE
-4.14 PAGAMENTO
+Armazena as informações das máquinas.
 
-5. Chaves Primárias
-  
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_maquina | INT | PK |
+| id_marca | INT | FK |
+| id_categoria | INT | FK |
+| modelo | VARCHAR(120) | — |
+| numero_serie | VARCHAR(80) | UNIQUE |
+| situacao_linha | VARCHAR(30) | — |
+| status | VARCHAR(30) | — |
+
+O campo `numero_serie` é único para evitar o cadastro duplicado de uma mesma máquina.
+
+O campo `situacao_linha` permite diferenciar máquinas em linha e fora de linha.
+
+O campo `status` representa a situação operacional da máquina, como:
+
+- DISPONIVEL;
+- ALUGADA;
+- EM_MANUTENCAO;
+- VENDIDA;
+- INDISPONIVEL.
+
+---
+
+## 4.6 LOCACAO
+
+Armazena os registros de locação realizados pela FELAP.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_locacao | INT | PK |
+| id_cliente | INT | FK |
+| id_funcionario | INT | FK |
+| data_retirada | DATE | — |
+| data_devolucao | DATE | — |
+
+A tabela relaciona o cliente e o funcionário responsável pelo registro da locação.
+
+A data de devolução deve ser igual ou posterior à data de retirada.
+
+---
+
+## 4.7 ITEM_LOCACAO
+
+Armazena as máquinas incluídas em cada locação e o valor da diária.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_item_locacao | INT | PK |
+| id_locacao | INT | FK |
+| id_maquina | INT | FK |
+| valor_diaria | DECIMAL(12,2) | — |
+
+A tabela permite relacionar uma locação às máquinas utilizadas.
+
+O valor da diária é armazenado no item da locação porque pode variar de acordo com a máquina ou negociação realizada.
+
+---
+
+## 4.8 VENDA
+
+Armazena os registros de venda de máquinas.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_venda | INT | PK |
+| id_cliente | INT | FK |
+| id_funcionario | INT | FK |
+| data | DATE | — |
+| valor_total | DECIMAL(12,2) | — |
+
+A tabela registra o cliente responsável pela compra, o funcionário responsável pelo registro, a data e o valor total da venda.
+
+---
+
+## 4.9 ITEM_VENDA
+
+Armazena as máquinas incluídas em uma venda.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_item_venda | INT | PK |
+| id_venda | INT | FK |
+| id_maquina | INT | FK |
+| valor_venda | DECIMAL(12,2) | — |
+
+Cada item relaciona uma venda a uma máquina específica.
+
+O campo `valor_venda` registra o valor negociado para a máquina no momento da venda.
+
+A mesma máquina não deve ser registrada em mais de uma venda.
+
+---
+
+## 4.10 ORDEM_SERVICO
+
+Armazena as ordens de serviço relacionadas à manutenção e assistência técnica.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_ordem_servico | INT | PK |
+| id_cliente | INT | FK |
+| id_funcionario | INT | FK |
+| id_maquina | INT | FK |
+| diagnostico | TEXT | — |
+| status | VARCHAR(30) | — |
+
+A ordem de serviço relaciona o cliente, o funcionário responsável e a máquina atendida.
+
+O campo `diagnostico` registra as informações relacionadas ao problema identificado.
+
+O campo `status` permite acompanhar a situação da ordem de serviço.
+
+Exemplos de status:
+
+- ABERTA;
+- EM_DIAGNOSTICO;
+- AGUARDANDO_PECAS;
+- EM_MANUTENCAO;
+- CONCLUIDA;
+- CANCELADA.
+
+---
+
+## 4.11 ITEM_ORDEM_SERVICO
+
+Armazena as peças utilizadas em cada ordem de serviço.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_item_os | INT | PK |
+| id_ordem_servico | INT | FK |
+| id_peca | INT | FK |
+| quantidade_utilizada | INT | — |
+
+A tabela permite registrar quais peças foram utilizadas em cada ordem de serviço e a quantidade utilizada.
+
+Essa estrutura evita armazenar várias peças em uma única coluna da ordem de serviço.
+
+---
+
+## 4.12 PECA
+
+Armazena as peças utilizadas nos serviços e controladas pelo estoque.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_peca | INT | PK |
+| descricao | VARCHAR(150) | — |
+| quantidade_estoque | INT | — |
+
+O campo `quantidade_estoque` representa a quantidade atual disponível da peça.
+
+O estoque não deve possuir quantidade negativa.
+
+---
+
+## 4.13 MOVIMENTACAO_ESTOQUE
+
+Registra as entradas e saídas de peças do estoque.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_movimentacao | INT | PK |
+| id_peca | INT | FK |
+| tipo | VARCHAR(20) | — |
+| quantidade | INT | — |
+
+O campo `tipo` identifica se a movimentação representa uma:
+
+- ENTRADA;
+- SAIDA.
+
+A quantidade deve ser maior que zero.
+
+A tabela permite manter o histórico das movimentações relacionadas às peças.
+
+---
+
+## 4.14 PAGAMENTO
+
+Armazena os pagamentos relacionados aos processos da empresa.
+
+| Campo | Tipo | Chave |
+|---|---|---|
+| id_pagamento | INT | PK |
+| id_venda | INT | FK |
+| id_locacao | INT | FK |
+| id_ordem_servico | INT | FK |
+| valor | DECIMAL(12,2) | — |
+| forma_pagamento | VARCHAR(30) | — |
+
+Um pagamento pode estar relacionado a uma venda, uma locação ou uma ordem de serviço.
+
+A estrutura utiliza as três chaves estrangeiras como possibilidades de origem do pagamento, sendo permitido informar apenas uma origem por registro.
+
 ---
 
 # 5. Chaves Primárias
@@ -171,8 +352,6 @@ As PKs identificam cada registro de forma única dentro de sua respectiva tabela
 
 # 6. Chaves Estrangeiras
 
-As principais chaves estrangeiras são:
-
 | Tabela | Campo FK | Tabela relacionada |
 |---|---|---|
 | maquina | id_marca | marca |
@@ -201,113 +380,24 @@ As chaves estrangeiras garantem a integridade referencial entre as tabelas.
 
 # 7. Relacionamentos Principais
 
-Os principais relacionamentos do modelo são:
+- CLIENTE → LOCACAO: 1:N
+- CLIENTE → VENDA: 1:N
+- CLIENTE → ORDEM_SERVICO: 1:N
+- FUNCIONARIO → LOCACAO: 1:N
+- FUNCIONARIO → VENDA: 1:N
+- FUNCIONARIO → ORDEM_SERVICO: 1:N
+- MARCA → MAQUINA: 1:N
+- CATEGORIA → MAQUINA: 1:N
+- LOCACAO → ITEM_LOCACAO: 1:N
+- MAQUINA → ITEM_LOCACAO: 1:N
+- VENDA → ITEM_VENDA: 1:N
+- MAQUINA → ITEM_VENDA: 1:1 no contexto de venda
+- MAQUINA → ORDEM_SERVICO: 1:N
+- ORDEM_SERVICO → ITEM_ORDEM_SERVICO: 1:N
+- PECA → ITEM_ORDEM_SERVICO: 1:N
+- PECA → MOVIMENTACAO_ESTOQUE: 1:N
 
-### Cliente → Locação
-
-Um cliente pode possuir várias locações.
-
-**Cardinalidade: 1:N**
-
-### Cliente → Venda
-
-Um cliente pode realizar várias vendas.
-
-**Cardinalidade: 1:N**
-
-### Cliente → Ordem de Serviço
-
-Um cliente pode possuir várias ordens de serviço.
-
-**Cardinalidade: 1:N**
-
-### Funcionário → Locação
-
-Um funcionário pode registrar várias locações.
-
-**Cardinalidade: 1:N**
-
-### Funcionário → Venda
-
-Um funcionário pode registrar várias vendas.
-
-**Cardinalidade: 1:N**
-
-### Funcionário → Ordem de Serviço
-
-Um funcionário pode registrar várias ordens de serviço.
-
-**Cardinalidade: 1:N**
-
-### Marca → Máquina
-
-Uma marca pode possuir várias máquinas cadastradas.
-
-**Cardinalidade: 1:N**
-
-### Categoria → Máquina
-
-Uma categoria pode possuir várias máquinas.
-
-**Cardinalidade: 1:N**
-
-### Locação → Item de Locação
-
-Uma locação pode possuir um ou mais itens de locação.
-
-**Cardinalidade: 1:N**
-
-### Máquina → Item de Locação
-
-Uma máquina pode aparecer em diferentes registros de locação ao longo do tempo.
-
-**Cardinalidade: 1:N**
-
-### Venda → Item de Venda
-
-Uma venda pode possuir um ou mais itens.
-
-**Cardinalidade: 1:N**
-
-### Máquina → Item de Venda
-
-Uma máquina pode ser registrada como item de uma venda.
-
-A regra do projeto considera que uma mesma máquina não deve ser vendida mais de uma vez.
-
-### Máquina → Ordem de Serviço
-
-Uma máquina pode possuir várias ordens de serviço ao longo de sua vida útil.
-
-**Cardinalidade: 1:N**
-
-### Ordem de Serviço → Item de Ordem de Serviço
-
-Uma ordem de serviço pode utilizar várias peças.
-
-**Cardinalidade: 1:N**
-
-### Peça → Item de Ordem de Serviço
-
-Uma peça pode ser utilizada em várias ordens de serviço.
-
-**Cardinalidade: 1:N**
-
-### Peça → Movimentação de Estoque
-
-Uma peça pode possuir várias movimentações de estoque.
-
-**Cardinalidade: 1:N**
-
-### Pagamento
-
-Um pagamento está relacionado a um processo de origem:
-
-- Venda;
-- Locação;
-- Ordem de Serviço.
-
-A estrutura utiliza três chaves estrangeiras opcionais e uma restrição para garantir que apenas uma origem seja informada por registro de pagamento.
+Um pagamento possui uma única origem entre venda, locação ou ordem de serviço.
 
 ---
 
@@ -323,7 +413,7 @@ O modelo atende à 1FN porque as informações foram separadas de acordo com sua
 
 Por exemplo, as peças utilizadas em uma ordem de serviço não são armazenadas em uma única coluna da tabela `ordem_servico`.
 
-Foi criada a tabela `item_ordem_servico`, que permite registrar:
+Foi criada a tabela `item_ordem_servico`, permitindo registrar:
 
 - a ordem de serviço;
 - a peça utilizada;
@@ -406,7 +496,7 @@ A normalização contribui para:
 
 A máquina é um dos principais elementos do negócio da FELAP.
 
-Ela participa de processos de:
+Ela participa dos processos de:
 
 - locação;
 - venda;
@@ -416,7 +506,7 @@ Ela participa de processos de:
 
 Por isso, a entidade `maquina` possui relacionamentos com diferentes processos.
 
-## 12.2 Controle de status da máquina
+## 12.2 Controle de status
 
 O campo `status` foi mantido na tabela `maquina` para centralizar a situação operacional atual.
 
@@ -428,85 +518,68 @@ Exemplos:
 - VENDIDA;
 - INDISPONIVEL.
 
-Isso facilita consultas sobre disponibilidade e situação das máquinas.
-
 ## 12.3 Separação dos processos
 
-Locação, venda e ordem de serviço foram mantidas em tabelas diferentes.
+Locação, venda e ordem de serviço foram mantidas em tabelas diferentes porque cada processo possui características próprias.
 
-Essa decisão foi tomada porque cada processo possui características próprias.
-
-A separação facilita:
-
-- consultas;
-- manutenção;
-- auditoria;
-- controle de regras;
-- expansão futura do sistema.
+A separação facilita consultas, manutenção, auditoria e expansão futura.
 
 ## 12.4 Uso das tabelas de itens
 
-Foram utilizadas tabelas intermediárias para representar os itens de cada processo:
+Foram utilizadas tabelas de itens:
 
 - `item_locacao`;
 - `item_venda`;
 - `item_ordem_servico`.
 
-Essa estrutura permite relacionar os processos com máquinas e peças sem duplicar informações.
+Essas estruturas permitem relacionar processos com máquinas e peças sem duplicar informações.
 
 ## 12.5 Controle de estoque
 
-A tabela `peca` armazena o estoque atual da peça.
+A tabela `peca` armazena o estoque atual.
 
-A tabela `movimentacao_estoque` registra entradas e saídas.
+A tabela `movimentacao_estoque` registra as entradas e saídas, permitindo manter o histórico das operações.
 
-Essa separação permite consultar tanto o saldo atual quanto o histórico de movimentações.
+## 12.6 Pagamentos
 
-## 12.6 Integridade dos dados
-
-Foram utilizadas restrições no banco para melhorar a qualidade das informações.
-
-Entre elas:
-
-- PRIMARY KEY;
-- FOREIGN KEY;
-- UNIQUE;
-- CHECK;
-- NOT NULL.
-
-Essas restrições ajudam a evitar registros inválidos ou inconsistentes.
+A tabela `pagamento` foi mantida separada para permitir que os registros financeiros sejam associados aos processos de venda, locação ou ordem de serviço.
 
 ---
 
 # 13. Implementação no MySQL 8.0
 
-O banco foi planejado para ser implementado no MySQL 8.0.
+O modelo foi preparado para implementação no MySQL 8.0.
 
 O script SQL contém:
 
-- criação do banco;
+- criação do banco de dados;
 - criação das tabelas;
-- definição de PKs;
-- definição de FKs;
-- restrições de integridade;
+- chaves primárias;
+- chaves estrangeiras;
+- restrições UNIQUE;
+- restrições CHECK;
 - inserção de dados fictícios;
-- consultas;
-- comandos de atualização;
-- comandos de exclusão;
+- consultas com JOIN;
 - consultas de gestão;
-- consultas de auditoria.
+- consultas de auditoria;
+- exemplos de UPDATE;
+- exemplo de DELETE.
 
-O arquivo SQL está disponível no repositório:
+O script SQL está disponível na pasta:
 
-`entrega-2/sql/felap_entrega2_mysql.sql`
+`entrega-2/sql/`
+
+Arquivo:
+
+`felap_entrega2_mysql.sql`
 
 ---
 
 # 14. Dados Fictícios
 
-Para testar o funcionamento do banco foram utilizados dados fictícios.
+Os dados utilizados no projeto são fictícios e foram criados apenas para testar o funcionamento do banco.
 
-A massa de dados contempla exemplos de:
+Foram cadastrados exemplos de:
 
 - clientes;
 - funcionários;
@@ -520,138 +593,72 @@ A massa de dados contempla exemplos de:
 - movimentações de estoque;
 - pagamentos.
 
-Os dados não representam informações pessoais reais de clientes ou funcionários.
+A massa de dados foi criada de maneira coerente com os relacionamentos do modelo, permitindo testar diferentes situações do negócio.
 
-O objetivo é permitir a execução das consultas e demonstrar o funcionamento do modelo sem exposição de dados pessoais.
+Nenhum dado pessoal real de clientes foi utilizado na implementação acadêmica.
 
 ---
 
 # 15. Consultas SQL
 
-As consultas SQL foram elaboradas para demonstrar a utilização prática do banco de dados.
-
-## 15.1 Consulta de máquinas com marca e categoria
+## 15.1 Consulta de clientes
 
 ```sql
+SELECT *
+FROM cliente;
+
+---
+
+15.2 Consulta de máquinas disponíveis
 SELECT
     m.id_maquina,
     m.modelo,
     m.numero_serie,
     ma.nome AS marca,
-    c.descricao AS categoria,
-    m.status
+    c.descricao AS categoria
 FROM maquina m
-INNER JOIN marca ma
-    ON m.id_marca = ma.id_marca
-INNER JOIN categoria c
-    ON m.id_categoria = c.id_categoria;
-
-15.2 Consulta de máquinas disponíveis
+JOIN marca ma ON ma.id_marca = m.id_marca
+JOIN categoria c ON c.id_categoria = m.id_categoria
+WHERE m.status = 'DISPONIVEL';
+15.3 Consulta de locações com clientes
 SELECT
-    id_maquina,
-    modelo,
-    numero_serie,
-    status
-FROM maquina
-WHERE status = 'DISPONIVEL';
-
-Essa consulta auxilia o setor responsável pela locação a identificar máquinas disponíveis.
-
-15.3 Consulta de máquinas em manutenção
-SELECT
-    id_maquina,
-    modelo,
-    numero_serie,
-    status
-FROM maquina
-WHERE status = 'EM_MANUTENCAO';
-
-Permite identificar máquinas que estão indisponíveis devido à manutenção.
-
-15.4 Consulta de estoque
-SELECT
-    id_peca,
-    descricao,
-    quantidade_estoque
-FROM peca
-ORDER BY quantidade_estoque ASC;
-
-Permite visualizar as peças ordenadas pela quantidade disponível.
-
-15.5 Consulta de ordens de serviço
+    l.id_locacao,
+    c.nome AS cliente,
+    l.data_retirada,
+    l.data_devolucao
+FROM locacao l
+JOIN cliente c ON c.id_cliente = l.id_cliente;
+15.4 Consulta de ordens de serviço
 SELECT
     os.id_ordem_servico,
     c.nome AS cliente,
     m.modelo AS maquina,
-    os.diagnostico,
-    os.status
+    os.status,
+    os.diagnostico
 FROM ordem_servico os
-INNER JOIN cliente c
-    ON os.id_cliente = c.id_cliente
-INNER JOIN maquina m
-    ON os.id_maquina = m.id_maquina;
-
-Essa consulta apresenta as ordens de serviço e os principais dados relacionados.
-
-15.6 Consulta de locações
+JOIN cliente c ON c.id_cliente = os.id_cliente
+JOIN maquina m ON m.id_maquina = os.id_maquina;
+15.5 Consulta de peças utilizadas
 SELECT
-    l.id_locacao,
-    c.nome AS cliente,
-    f.nome AS funcionario,
-    l.data_retirada,
-    l.data_devolucao
-FROM locacao l
-INNER JOIN cliente c
-    ON l.id_cliente = c.id_cliente
-INNER JOIN funcionario f
-    ON l.id_funcionario = f.id_funcionario;
-
-Permite consultar os registros de locação e os responsáveis.
-
-15.7 Consulta de vendas
+    os.id_ordem_servico,
+    p.descricao AS peca,
+    ios.quantidade_utilizada
+FROM item_ordem_servico ios
+JOIN ordem_servico os
+    ON os.id_ordem_servico = ios.id_ordem_servico
+JOIN peca p
+    ON p.id_peca = ios.id_peca;
+15.6 Consulta de vendas
 SELECT
     v.id_venda,
     c.nome AS cliente,
-    f.nome AS funcionario,
     v.data,
     v.valor_total
 FROM venda v
-INNER JOIN cliente c
-    ON v.id_cliente = c.id_cliente
-INNER JOIN funcionario f
-    ON v.id_funcionario = f.id_funcionario;
-
-Permite acompanhar as vendas registradas no sistema.
-
-15.8 Consulta de movimentações de estoque
-SELECT
-    me.id_movimentacao,
-    p.descricao,
-    me.tipo,
-    me.quantidade
-FROM movimentacao_estoque me
-INNER JOIN peca p
-    ON me.id_peca = p.id_peca
-ORDER BY me.id_movimentacao;
-
-Permite visualizar o histórico de entradas e saídas registradas.
-
-15.9 Consulta de pagamentos
-SELECT
-    id_pagamento,
-    valor,
-    forma_pagamento,
-    id_venda,
-    id_locacao,
-    id_ordem_servico
-FROM pagamento
-ORDER BY id_pagamento;
-
-Permite identificar os pagamentos e seus respectivos processos de origem.
-
+JOIN cliente c ON c.id_cliente = v.id_cliente;
 16. Consultas de Gestão
 
-As consultas de gestão têm como objetivo transformar os dados armazenados no banco em informações úteis para tomada de decisão.
+As consultas de gestão permitem transformar os dados operacionais em informações úteis para tomada de decisão.
 
 16.1 Quantidade de máquinas por status
 SELECT
@@ -660,17 +667,14 @@ SELECT
 FROM maquina
 GROUP BY status
 ORDER BY quantidade DESC;
-
-Essa consulta permite identificar quantas máquinas estão disponíveis, alugadas, em manutenção, vendidas ou indisponíveis.
-
-16.2 Valor total das vendas
+16.2 Estoque atual de peças
 SELECT
-    SUM(valor_total) AS total_vendas
-FROM venda;
-
-Permite visualizar o valor acumulado das vendas registradas.
-
-16.3 Peças com estoque reduzido
+    id_peca,
+    descricao,
+    quantidade_estoque
+FROM peca
+ORDER BY quantidade_estoque ASC;
+16.3 Peças com estoque baixo
 SELECT
     id_peca,
     descricao,
@@ -678,293 +682,318 @@ SELECT
 FROM peca
 WHERE quantidade_estoque <= 5
 ORDER BY quantidade_estoque ASC;
-
-Pode auxiliar a equipe a identificar peças que precisam de reposição.
-
-16.4 Ordens de serviço por status
+16.4 Total de vendas
 SELECT
-    status,
-    COUNT(*) AS quantidade
-FROM ordem_servico
-GROUP BY status
-ORDER BY quantidade DESC;
-
-Permite acompanhar a situação das ordens de serviço.
-
+    SUM(valor_total) AS total_vendas
+FROM venda;
+16.5 Total recebido por forma de pagamento
+SELECT
+    forma_pagamento,
+    SUM(valor) AS total_recebido
+FROM pagamento
+GROUP BY forma_pagamento
+ORDER BY total_recebido DESC;
 17. Consultas de Auditoria
 
-As consultas de auditoria permitem verificar situações que podem indicar inconsistências ou necessidade de conferência.
+As consultas de auditoria ajudam a identificar inconsistências ou situações que precisam de verificação.
 
-17.1 Máquinas com número de série
+17.1 Máquinas vendidas ainda marcadas como disponíveis
 SELECT
-    id_maquina,
-    modelo,
-    numero_serie
-FROM maquina
-ORDER BY numero_serie;
-
-Permite conferir os números de série cadastrados.
-
-17.2 Movimentações de estoque
+    m.id_maquina,
+    m.modelo,
+    m.numero_serie,
+    m.status
+FROM maquina m
+JOIN item_venda iv
+    ON iv.id_maquina = m.id_maquina
+WHERE m.status <> 'VENDIDA';
+17.2 Estoque negativo
 SELECT
-    me.id_movimentacao,
-    p.descricao,
-    me.tipo,
-    me.quantidade
-FROM movimentacao_estoque me
-INNER JOIN peca p
-    ON me.id_peca = p.id_peca
-ORDER BY me.id_movimentacao;
+    id_peca,
+    descricao,
+    quantidade_estoque
+FROM peca
+WHERE quantidade_estoque < 0;
 
-Permite acompanhar as entradas e saídas de peças.
+Essa consulta deve retornar zero registros quando a regra de integridade estiver funcionando corretamente.
 
-17.3 Máquinas atualmente vendidas
+17.3 Locações com datas inconsistentes
 SELECT
-    id_maquina,
-    modelo,
-    numero_serie,
-    status
-FROM maquina
-WHERE status = 'VENDIDA';
-
-Permite conferir as máquinas que já foram marcadas como vendidas.
-
+    id_locacao,
+    data_retirada,
+    data_devolucao
+FROM locacao
+WHERE data_devolucao < data_retirada;
+17.4 Pagamentos sem origem válida
+SELECT
+    id_pagamento,
+    valor,
+    forma_pagamento
+FROM pagamento
+WHERE
+    (id_venda IS NULL AND id_locacao IS NULL AND id_ordem_servico IS NULL)
+    OR
+    (
+        (id_venda IS NOT NULL) +
+        (id_locacao IS NOT NULL) +
+        (id_ordem_servico IS NOT NULL)
+    ) <> 1;
 18. UPDATE e DELETE
+18.1 Exemplo de UPDATE
 
-O projeto também contempla comandos de alteração e exclusão de registros.
-
-18.1 UPDATE
-
-Exemplo de alteração do status de uma máquina:
+Atualização do status de uma máquina:
 
 UPDATE maquina
 SET status = 'EM_MANUTENCAO'
 WHERE id_maquina = 3;
 
-O comando deve ser utilizado com cuidado, sempre verificando o registro que será alterado.
+Antes de executar alterações definitivas, recomenda-se verificar o registro com um SELECT.
 
-18.2 DELETE
+18.2 Exemplo de DELETE
 
-Exemplo de exclusão de uma movimentação específica:
+Exemplo acadêmico de exclusão:
 
-DELETE FROM movimentacao_estoque
-WHERE id_movimentacao = 10;
+DELETE FROM cliente
+WHERE id_cliente = 5;
 
-A exclusão deve respeitar as restrições de integridade referencial existentes no banco.
-
-Em ambiente real, operações de exclusão devem seguir as regras de auditoria e autorização da empresa.
+A exclusão deve respeitar as chaves estrangeiras existentes. Em um ambiente real, os registros relacionados devem ser analisados antes da exclusão.
 
 19. Potencial de BI
 
-O banco de dados possui potencial para utilização em ferramentas de Business Intelligence (BI), pois reúne informações de máquinas, clientes, vendas, locações, ordens de serviço, peças e pagamentos.
+O banco de dados possui potencial para utilização em soluções de Business Intelligence (BI).
 
-A utilização de BI poderia transformar os dados operacionais em indicadores para apoio à gestão.
+Os dados podem ser utilizados para gerar indicadores relacionados a:
 
-Entre as informações estratégicas possíveis estão:
+vendas;
+locações;
+máquinas;
+manutenção;
+estoque;
+pagamentos;
+utilização de peças.
 
-quantidade de máquinas disponíveis;
-quantidade de máquinas em manutenção;
+A partir desses dados, a empresa poderia criar dashboards para acompanhar o desempenho operacional.
+
+Exemplos de análises:
+
 máquinas mais alugadas;
-vendas realizadas por período;
-faturamento por período;
-peças mais utilizadas;
-peças com baixo estoque;
+máquinas vendidas;
 quantidade de ordens de serviço;
-ordens de serviço por status;
-formas de pagamento mais utilizadas.
+peças mais utilizadas;
+peças com maior movimentação;
+formas de pagamento mais utilizadas;
+situação atual das máquinas;
+volume de locações ao longo do tempo.
+20. KPIs
 
-Uma futura solução de BI poderia utilizar o banco MySQL como fonte de dados e uma ferramenta de visualização para criação de dashboards.
-
-20. KPIs Propostos
-
-Os principais indicadores de desempenho (KPIs) que podem ser acompanhados são:
+Alguns indicadores que podem ser utilizados pela FELAP são:
 
 KPI	Objetivo
-Total de vendas	Medir o valor das vendas realizadas
-Máquinas disponíveis	Acompanhar a capacidade disponível para locação
-Máquinas alugadas	Medir utilização da frota
+Total de vendas	Medir o faturamento com vendas
+Total de locações	Medir a utilização da frota
+Máquinas disponíveis	Acompanhar disponibilidade
 Máquinas em manutenção	Acompanhar indisponibilidade
-Ordens de serviço abertas	Medir demanda da assistência técnica
-Ordens aguardando peças	Identificar impacto do estoque nos serviços
-Peças em baixo estoque	Apoiar decisões de reposição
-Valor médio das vendas	Avaliar o comportamento comercial
-Quantidade de locações	Medir utilização do serviço de locação
+Ordens de serviço abertas	Medir demanda da oficina
+Ordens concluídas	Acompanhar produtividade
+Peças em estoque	Controlar disponibilidade
+Peças mais utilizadas	Apoiar compras
+Valor recebido	Acompanhar entradas financeiras
+Máquinas vendidas	Acompanhar saída do ativo
 
-Esses indicadores poderiam ser apresentados em dashboards gerenciais.
+Esses indicadores podem ser acompanhados em períodos diário, semanal, mensal ou anual.
 
 21. Possibilidades de IA
 
-Após a estruturação do banco, os dados também podem ser utilizados futuramente em soluções de Inteligência Artificial.
+Com uma base de dados organizada, soluções de Inteligência Artificial podem ser utilizadas futuramente como apoio à gestão.
 
-Algumas possibilidades são:
+21.1 Previsão de demanda
 
-21.1 Previsão de demanda de peças
+A IA pode analisar o histórico de locações e vendas para estimar períodos de maior procura.
 
-A partir do histórico de utilização das peças, um modelo poderia estimar quais peças possuem maior probabilidade de serem utilizadas no futuro.
+21.2 Previsão de necessidade de peças
 
-21.2 Previsão de manutenção
+O histórico de utilização das peças pode ser utilizado para estimar quais itens terão maior demanda.
 
-Históricos de ordens de serviço poderiam ser analisados para identificar padrões relacionados à necessidade de manutenção.
+21.3 Apoio à manutenção
 
-21.3 Recomendação de reposição de estoque
+O histórico de ordens de serviço pode ser analisado para identificar máquinas com maior frequência de manutenção.
 
-A IA poderia recomendar quais peças devem ser repostas e em qual quantidade, considerando o histórico de consumo.
+21.4 Recomendação de estoque
 
-21.4 Análise de disponibilidade
+A IA pode auxiliar na definição de níveis de estoque com base no consumo histórico.
 
-Um sistema inteligente poderia analisar locações, manutenção e vendas para auxiliar na previsão de disponibilidade das máquinas.
+21.5 Identificação de anomalias
 
-21.5 Apoio à gestão
+Modelos analíticos podem apontar situações fora do padrão, como movimentações incomuns de estoque ou alterações inesperadas no comportamento das máquinas.
 
-Modelos analíticos poderiam gerar alertas sobre baixo estoque, excesso de máquinas em manutenção ou redução da utilização da frota.
-
-Essas aplicações são propostas futuras e dependem de dados históricos suficientes e de validação pela empresa.
+A IA seria utilizada como apoio à decisão, e não como substituição da análise dos responsáveis pela empresa.
 
 22. Arquitetura de BI e IA
 
-Uma arquitetura futura poderia ser organizada da seguinte forma:
+Uma possível arquitetura futura é:
 
-BANCO MYSQL
-     |
-     v
-CAMADA DE TRATAMENTO
-     |
-     v
-DATASET / DATA MART
-     |
-     +----------------------+
-     |                      |
-     v                      v
-    BI                     IA
-     |                      |
-     v                      v
-DASHBOARDS             PREVISÕES
-INDICADORES            RECOMENDAÇÕES
-     |                      |
-     +----------+-----------+
-                |
-                v
-          APOIO À DECISÃO
+                 BANCO DE DADOS FELAP
+                         |
+                         v
+                ETL / TRATAMENTO
+                         |
+                         v
+                DATA WAREHOUSE
+                    /          \
+                   /            \
+                  v              v
+                BI               IA
+                 |               |
+                 v               v
+            DASHBOARDS      PREVISÕES
+                             RECOMENDAÇÕES
+                             ANOMALIAS
+                 \             /
+                  \           /
+                   v         v
+                  GESTÃO E TOMADA
+                    DE DECISÃO
 
-O banco operacional continuaria sendo responsável pelo armazenamento dos dados.
+O banco operacional armazenaria os dados do dia a dia.
 
-A camada de tratamento prepararia as informações para análise.
+Um processo de ETL poderia extrair, transformar e carregar os dados para uma estrutura analítica.
 
-O BI seria utilizado para indicadores e dashboards, enquanto a IA poderia ser utilizada para previsões, classificações e recomendações.
+O BI apresentaria indicadores e dashboards.
+
+A IA poderia utilizar os dados históricos para previsões, recomendações e identificação de padrões.
 
 23. Benefícios Esperados
 
-A implantação da solução proposta pode proporcionar:
+A implementação do banco de dados pode proporcionar:
 
-maior organização dos dados;
+centralização das informações;
 redução de duplicidade;
-maior controle sobre as máquinas;
-melhor acompanhamento das locações;
-melhor controle das vendas;
-histórico das ordens de serviço;
-maior controle das peças;
-acompanhamento das movimentações de estoque;
-melhoria das consultas gerenciais;
+maior organização dos cadastros;
+melhoria do controle de máquinas;
+melhoria do controle de estoque;
+acompanhamento das ordens de serviço;
+facilidade na geração de relatórios;
+melhoria da rastreabilidade;
 apoio à tomada de decisão;
-possibilidade de utilização futura de BI e IA.
-24. Regras de Negócio Consideradas
+preparação para soluções de BI e IA.
 
-As principais regras consideradas no desenvolvimento são:
+Para a empresa, a principal vantagem é transformar informações dos processos em dados estruturados e consultáveis.
 
-O número de série de uma máquina deve ser único.
-Uma máquina não deve ser registrada em mais de uma venda.
-A data de devolução de uma locação deve ser igual ou posterior à data de retirada.
-O estoque de peças não deve possuir quantidade negativa.
-A quantidade de uma movimentação de estoque deve ser maior que zero.
+24. Regras de Negócio
+
+As principais regras consideradas no projeto são:
+
+Cada máquina deve possuir número de série único.
+Uma máquina não deve ser vendida mais de uma vez.
+Uma locação deve possuir cliente e funcionário responsáveis.
+A data de devolução não deve ser anterior à data de retirada.
+Uma máquina disponível pode participar de uma locação conforme as regras operacionais da empresa.
+Máquinas fora de linha devem ser tratadas de acordo com as regras de disponibilidade definidas pela empresa.
+Uma máquina pode possuir várias ordens de serviço ao longo do tempo.
 Uma ordem de serviço pode utilizar várias peças.
-Uma peça pode participar de várias ordens de serviço.
-Uma peça pode possuir várias movimentações de estoque.
-Uma máquina pode possuir várias ordens de serviço ao longo de sua vida útil.
-Um pagamento deve estar relacionado a uma única origem entre venda, locação ou ordem de serviço.
-Máquinas em manutenção não devem ser disponibilizadas para locação enquanto permanecerem nesse status.
-Máquinas vendidas não devem voltar a ser disponibilizadas para locação.
-As regras relacionadas à compatibilidade entre máquinas e peças devem ser validadas na pesquisa de campo antes de uma implementação definitiva.
-
-As regras operacionais que dependem de processos da aplicação, como impedir uma locação de máquina indisponível, deverão ser reforçadas pela aplicação ou por mecanismos adicionais do banco, como triggers, conforme a necessidade da versão final.
-
+O estoque não deve possuir quantidade negativa.
+Toda movimentação de estoque deve possuir peça, tipo e quantidade.
+O pagamento deve possuir somente uma origem entre venda, locação e ordem de serviço.
+O acesso aos dados deve respeitar as permissões dos usuários do sistema.
+Dados pessoais reais não devem ser utilizados nos arquivos acadêmicos.
+Regras específicas de compatibilidade entre máquinas e peças devem ser confirmadas na pesquisa de campo antes de serem incorporadas ao modelo definitivo.
 25. Pontos de Validação e Evolução
 
-Alguns pontos do modelo devem continuar sendo validados durante a pesquisa de campo e a evolução do projeto.
+O modelo ainda pode receber ajustes após a validação em campo.
 
-Entre eles:
+Entre os pontos que devem ser confirmados estão:
 
-existência de necessidade de registrar data específica em cada movimentação de estoque;
-necessidade de registrar valor de orçamento e aprovação do cliente em ordens de serviço;
-regras reais de compatibilidade entre peças e máquinas;
-regras para máquinas fora de linha;
-quantidade e formas reais de pagamento;
-regras de acesso por funcionário;
-necessidade de histórico detalhado de alterações;
-necessidade de novos atributos identificados durante a pesquisa de campo.
+regras reais de disponibilidade das máquinas;
+controle de máquinas fora de linha;
+regras de compatibilidade entre máquinas e peças;
+processo de aprovação de orçamento;
+regras reais de pagamento;
+necessidade de histórico de alterações;
+necessidade de registro de data nas movimentações de estoque;
+regras para cancelamento e encerramento de ordens de serviço.
 
-Esses pontos não foram inventados no modelo sem validação, pois a intenção é manter a solução coerente com as informações obtidas junto à organização.
+Esses pontos não devem ser tratados como fatos definitivos enquanto não forem confirmados com a empresa.
 
-26. Uso de Inteligência Artificial
+Caso a pesquisa de campo confirme a necessidade, o modelo lógico poderá ser refinado sem alterar sua estrutura principal.
 
-A Inteligência Artificial foi utilizada como apoio ao desenvolvimento do projeto.
+26. Uso de IA
 
-26.1 Ferramentas utilizadas
+A Inteligência Artificial foi utilizada como ferramenta de apoio ao desenvolvimento do projeto.
 
-Foram utilizadas ferramentas de IA para:
+As ferramentas utilizadas foram:
 
-levantamento inicial de ideias;
-organização da estrutura do banco;
-revisão do modelo lógico;
-apoio na definição de PKs e FKs;
-revisão de consultas SQL;
-identificação de possíveis inconsistências;
-elaboração de sugestões para BI e IA.
-26.2 Forma de utilização
+Claude;
+ChatGPT.
+26.1 Apoio na construção do modelo
 
-A IA foi utilizada como ferramenta de apoio e revisão, e não como substituta da análise do grupo.
+A IA foi utilizada para:
+
+organizar ideias;
+revisar entidades;
+sugerir relacionamentos;
+revisar chaves primárias e estrangeiras;
+apoiar a elaboração do SQL;
+revisar consultas;
+estruturar o relatório técnico;
+sugerir possibilidades de BI e IA.
+26.2 Validação humana
+
+As respostas geradas pela IA não foram aceitas automaticamente.
 
 As sugestões foram comparadas com:
 
-o modelo conceitual;
-as regras de negócio;
-a estrutura definida para a FELAP;
-o script SQL;
-as necessidades da Entrega 2.
+requisitos da atividade;
+modelo conceitual;
+regras de negócio;
+estrutura do banco;
+necessidade de validação em campo.
 
-Informações que não estavam confirmadas pela pesquisa de campo foram tratadas como propostas ou pontos de validação.
+Quando uma sugestão não correspondia ao modelo desenvolvido, ela foi ajustada ou descartada.
 
-26.3 Reflexão sobre o uso da IA
+26.3 Exemplo de uso
 
-O uso da IA facilitou a organização do trabalho e ajudou a identificar problemas de estrutura, mas as respostas não foram aceitas automaticamente.
+Um exemplo de solicitação feita à IA foi:
 
-Foi necessário revisar e adaptar as sugestões para manter coerência entre o modelo conceitual, o modelo lógico, o SQL e as regras de negócio.
+Revise o modelo lógico do banco de dados da FELAP e verifique se as tabelas possuem PKs, FKs e relacionamentos coerentes com o modelo conceitual.
 
-Essa revisão é importante porque uma resposta gerada por IA pode apresentar soluções tecnicamente possíveis, mas que não necessariamente representam o funcionamento real da organização.
+A resposta serviu como apoio para identificar pontos de melhoria.
+
+A decisão final sobre o modelo permaneceu baseada nos requisitos da atividade e nas regras do projeto.
 
 27. Reflexão Crítica
 
-O desenvolvimento da Entrega 2 mostrou a importância de manter consistência entre as diferentes etapas do projeto.
+A utilização de IA facilitou a organização do projeto e ajudou na identificação de possíveis inconsistências.
 
-O modelo lógico não deve ser construído de forma isolada. Ele precisa estar relacionado ao modelo conceitual, às regras de negócio e às necessidades identificadas na organização.
+Entretanto, foi necessário analisar criticamente as respostas, pois uma sugestão gerada automaticamente pode não representar corretamente a realidade da empresa.
 
-A normalização contribuiu para organizar as informações e reduzir redundâncias.
+Durante o desenvolvimento, percebeu-se que algumas informações precisam ser confirmadas diretamente na pesquisa de campo antes de serem incorporadas definitivamente ao banco.
 
-A definição das PKs e FKs permitiu estabelecer os relacionamentos entre as tabelas e melhorar a integridade dos dados.
+Por esse motivo, a IA foi utilizada como ferramenta de apoio e não como fonte única de decisão.
 
-A criação de dados fictícios e consultas SQL também permitiu verificar se o modelo é capaz de representar situações relacionadas à operação da FELAP.
-
-A utilização de IA contribuiu para revisão e geração de ideias, porém foi necessário avaliar criticamente cada sugestão antes de incorporá-la ao projeto.
+O conhecimento das regras de negócio e a revisão humana continuam sendo necessários para garantir que o banco represente corretamente os processos da FELAP.
 
 28. Conclusão
 
-A Entrega 2 transformou o modelo conceitual da FELAP em uma estrutura lógica relacional composta por 14 tabelas.
+A Entrega 2 transformou o modelo conceitual da FELAP em uma proposta de modelo lógico relacional composta por 14 tabelas.
 
-Foram definidas chaves primárias, chaves estrangeiras, tipos de dados, restrições de integridade e relacionamentos.
+Foram definidas:
 
-O modelo foi organizado buscando atender às três primeiras formas normais e permitir uma futura implementação no MySQL 8.0.
+tabelas;
+PKs;
+FKs;
+relacionamentos;
+regras de integridade;
+normalização;
+dados fictícios;
+consultas SQL;
+consultas de gestão;
+consultas de auditoria;
+operações de atualização;
+potencial de BI;
+possibilidades de utilização de IA.
 
-Também foram desenvolvidos dados fictícios e consultas SQL para demonstrar o funcionamento do banco.
+O modelo foi estruturado para atender aos principais processos identificados na empresa, mantendo separadas as informações de clientes, funcionários, máquinas, locações, vendas, assistência técnica, peças, estoque e pagamentos.
 
-Além da operação básica, o projeto apresenta potencial para utilização de BI e Inteligência Artificial, principalmente em análises de vendas, locações, manutenção, estoque e disponibilidade de máquinas.
+O projeto também foi preparado para futuras evoluções, principalmente após a validação das regras de negócio durante a pesquisa de campo.
 
-A próxima evolução do projeto deverá considerar os resultados da pesquisa de campo e os testes da implementação SQL, permitindo ajustar o modelo às necessidades reais da organização.
+Assim, o banco de dados proposto constitui uma base para organização das informações da FELAP e para futuras soluções de análise de dados, BI e Inteligência Artificial.
