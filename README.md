@@ -1,5 +1,7 @@
 # Projeto de Banco de Dados — FELAP Máquinas e Equipamentos LTDA
 
+nome dos itegrantes: diego henrique, matheus, rafael
+
 ## 1. Caracterização da Organização
 
 A organização escolhida é a **FELAP Máquinas e Equipamentos LTDA**, empresa privada com fins lucrativos localizada na cidade de São Paulo/SP, atuante no ramo de máquinas e equipamentos de trabalho.
